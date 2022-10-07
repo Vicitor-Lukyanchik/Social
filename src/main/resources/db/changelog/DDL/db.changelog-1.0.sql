@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS users_roles;
 DROP TABLE IF EXISTS profiles_groups;
 DROP TABLE IF EXISTS messages;
-DROP TABLE IF EXISTS friends;
+DROP TABLE IF EXISTS chats;
 DROP TABLE IF EXISTS profiles;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS roles;
@@ -46,17 +46,21 @@ CREATE TABLE profiles
     CHECK (family_status IN ('not specified', 'married', 'not married', 'in love', 'actively looking'))
 );
 
-CREATE TABLE friends
+CREATE TABLE profiles_chats
 (
-    id          BIGSERIAL PRIMARY KEY NOT NULL,
-    sender_id   BIGINT                NOT NULL REFERENCES profiles (id),
-    receiver_id BIGINT                NOT NULL REFERENCES profiles (id)
+    profiles_id BIGINT                NOT NULL REFERENCES profiles (id),
+    chats_id   BIGINT                NOT NULL REFERENCES chats (id)
+);
+
+CREATE TABLE chats
+(
+    id          BIGSERIAL PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE messages
 (
     id         BIGSERIAL PRIMARY KEY NOT NULL,
-    friends_id BIGINT                NOT NULL REFERENCES friends (id),
+    chats_id BIGINT                NOT NULL REFERENCES chats (id),
     text       VARCHAR(255)          NOT NULL,
     date_time  TIMESTAMP             NOT NULL
 );
