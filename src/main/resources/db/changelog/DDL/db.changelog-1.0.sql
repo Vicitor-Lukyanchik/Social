@@ -47,16 +47,16 @@ CREATE TABLE profiles
     CHECK (family_status IN ('not specified', 'married', 'not married', 'in love', 'actively looking'))
 );
 
-CREATE TABLE profiles_chats
-(
-    profiles_id BIGINT NOT NULL REFERENCES profiles (id),
-    chats_id    BIGINT NOT NULL REFERENCES chats (id)
-);
-
 CREATE TABLE chats
 (
     id   BIGSERIAL PRIMARY KEY NOT NULL,
     name VARCHAR(50)           NOT NULL
+);
+
+CREATE TABLE profiles_chats
+(
+    profiles_id BIGINT NOT NULL REFERENCES profiles (id),
+    chats_id    BIGINT NOT NULL REFERENCES chats (id)
 );
 
 CREATE TABLE messages
