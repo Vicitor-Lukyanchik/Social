@@ -25,6 +25,7 @@ public class User {
 
     @Column(name = "password")
     @NotBlank(message = "Password can't be empty")
+    @Size(min = 4, max = 30, message = "Password should be more then 4 and less than 30")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
