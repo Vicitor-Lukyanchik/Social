@@ -86,6 +86,7 @@ CREATE TABLE post
 (
     id        BIGSERIAL PRIMARY KEY NOT NULL,
     group_id  BIGINT                NOT NULL REFERENCES groups (id),
+    chat_id   BIGINT                NOT NULL REFERENCES chat (id),
     title     VARCHAR(80)           NOT NULL,
     text      VARCHAR(255)          NOT NULL,
     date_time TIMESTAMP             NOT NULL
