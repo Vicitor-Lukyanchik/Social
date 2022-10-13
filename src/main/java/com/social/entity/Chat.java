@@ -26,10 +26,26 @@ public class Chat {
     @ManyToMany(mappedBy = "chats", fetch = FetchType.LAZY)
     private List<Profile> profiles;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat")
+    private List<Message> messages;
+
+    public Chat(Long id, String name, List<Profile> profiles, List<Message> messages) {
+        this.id = id;
+        this.name = name;
+        this.profiles = profiles;
+        this.messages = messages;
+    }
+
     public Chat(Long id, String name, List<Profile> profiles) {
         this.id = id;
         this.name = name;
         this.profiles = profiles;
+    }
+
+    public Chat(String name, List<Profile> profiles, List<Message> messages) {
+        this.name = name;
+        this.profiles = profiles;
+        this.messages = messages;
     }
 
     public Chat(String name, List<Profile> profiles) {
@@ -63,16 +79,24 @@ public class Chat {
         this.profiles = profiles;
     }
 
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Chat chat = (Chat) o;
-        return Objects.equals(id, chat.id) && Objects.equals(name, chat.name) && Objects.equals(profiles, chat.profiles);
+        return Objects.equals(id, chat.id) && Objects.equals(name, chat.name) && Objects.equals(profiles, chat.profiles) && Objects.equals(messages, chat.messages);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, profiles);
+        return Objects.hash(id, name, profiles, messages);
     }
 }

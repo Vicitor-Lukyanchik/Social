@@ -15,7 +15,7 @@ CREATE TABLE users
 (
     id       BIGSERIAL PRIMARY KEY NOT NULL,
     username VARCHAR(50)           NOT NULL,
-    password VARCHAR(30)          NOT NULL,
+    password VARCHAR(30)           NOT NULL,
     status   VARCHAR(25)           NOT NULL DEFAULT 'ACTIVE'
 );
 
@@ -62,10 +62,11 @@ CREATE TABLE profile_chat
 
 CREATE TABLE message
 (
-    id        BIGSERIAL PRIMARY KEY NOT NULL,
-    chat_id   BIGINT                NOT NULL REFERENCES chat (id),
-    text      VARCHAR(255)          NOT NULL,
-    date_time TIMESTAMP             NOT NULL
+    id         BIGSERIAL PRIMARY KEY NOT NULL,
+    chat_id    BIGINT                NOT NULL REFERENCES chat (id),
+    profile_id BIGINT                NOT NULL REFERENCES profile (id),
+    text       VARCHAR(255)          NOT NULL,
+    date_time  TIMESTAMP             NOT NULL
 );
 
 CREATE TABLE interest
