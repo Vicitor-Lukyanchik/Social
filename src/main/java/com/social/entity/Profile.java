@@ -68,7 +68,7 @@ public class Profile {
             inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")})
     private List<Group> joinGroups;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "createdProfile")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
     private List<Group> createdGroups;
 
     @ManyToMany(fetch = FetchType.LAZY)

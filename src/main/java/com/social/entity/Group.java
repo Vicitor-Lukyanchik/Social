@@ -29,25 +29,25 @@ public class Group {
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "profile_id")
-    private Profile createdProfile;
+    private Profile profile;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
     private List<Post> posts;
 
-    public Group(Long id, String name, Interest interest, List<Profile> joinProfiles, Profile createdProfile, List<Post> posts) {
+    public Group(Long id, String name, Interest interest, List<Profile> joinProfiles, Profile profile, List<Post> posts) {
         this.id = id;
         this.name = name;
         this.interest = interest;
         this.joinProfiles = joinProfiles;
-        this.createdProfile = createdProfile;
+        this.profile = profile;
         this.posts = posts;
     }
 
-    public Group(String name, Interest interest, List<Profile> joinProfiles, Profile createdProfile, List<Post> posts) {
+    public Group(String name, Interest interest, List<Profile> joinProfiles, Profile profile, List<Post> posts) {
         this.name = name;
         this.interest = interest;
         this.joinProfiles = joinProfiles;
-        this.createdProfile = createdProfile;
+        this.profile = profile;
         this.posts = posts;
     }
 
@@ -85,12 +85,12 @@ public class Group {
         this.joinProfiles = joinProfiles;
     }
 
-    public Profile getCreatedProfile() {
-        return createdProfile;
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void setCreatedProfile(Profile createdProfile) {
-        this.createdProfile = createdProfile;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public List<Post> getPosts() {
@@ -106,11 +106,11 @@ public class Group {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Group group = (Group) o;
-        return Objects.equals(id, group.id) && Objects.equals(name, group.name) && Objects.equals(interest, group.interest) && Objects.equals(joinProfiles, group.joinProfiles) && Objects.equals(createdProfile, group.createdProfile) && Objects.equals(posts, group.posts);
+        return Objects.equals(id, group.id) && Objects.equals(name, group.name) && Objects.equals(interest, group.interest) && Objects.equals(joinProfiles, group.joinProfiles) && Objects.equals(profile, group.profile) && Objects.equals(posts, group.posts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, interest, joinProfiles, createdProfile, posts);
+        return Objects.hash(id, name, interest, joinProfiles, profile, posts);
     }
 }

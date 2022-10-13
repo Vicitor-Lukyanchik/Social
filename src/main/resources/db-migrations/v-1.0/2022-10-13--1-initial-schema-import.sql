@@ -15,7 +15,7 @@ CREATE TABLE users
 (
     id       BIGSERIAL PRIMARY KEY NOT NULL,
     username VARCHAR(50)           NOT NULL,
-    password VARCHAR(100)          NOT NULL,
+    password VARCHAR(30)          NOT NULL,
     status   VARCHAR(25)           NOT NULL DEFAULT 'ACTIVE'
 );
 
@@ -86,6 +86,7 @@ CREATE TABLE post
 (
     id        BIGSERIAL PRIMARY KEY NOT NULL,
     group_id  BIGINT                NOT NULL REFERENCES groups (id),
+    chat_id   BIGINT                NOT NULL REFERENCES chat (id),
     title     VARCHAR(80)           NOT NULL,
     text      VARCHAR(255)          NOT NULL,
     date_time TIMESTAMP             NOT NULL

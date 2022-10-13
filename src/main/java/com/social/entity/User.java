@@ -20,7 +20,7 @@ public class User {
 
     @Column(name = "username")
     @NotBlank(message = "Username can't be empty")
-    @Size(min = 6, max = 30, message = "Username should be more then 6 and less than 30")
+    @Size(min = 4, max = 50, message = "Username should be more then 4 and less than 50")
     private String username;
 
     @Column(name = "password")
