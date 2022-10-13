@@ -1,0 +1,4 @@
+db-migrations
+open cmd
+cd path(where changelog file)
+liquibase --url=jdbc:postgresql://localhost:5432/social --driver=org.postgresql.Driver --username=postgres --password=1234 --changeLogFile=changelog.xml update
