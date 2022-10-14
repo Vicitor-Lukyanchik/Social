@@ -1,21 +1,21 @@
-DROP TABLE IF EXISTS user_role;
-DROP TABLE IF EXISTS profile_group;
-DROP TABLE IF EXISTS profile_chat;
-DROP TABLE IF EXISTS message;
-DROP TABLE IF EXISTS chat;
-DROP TABLE IF EXISTS post;
-DROP TABLE IF EXISTS groups;
-DROP TABLE IF EXISTS profile;
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS role;
-DROP TABLE IF EXISTS interest;
+DROP TABLE IF EXISTS user_role CASCADE;
+DROP TABLE IF EXISTS profile_group CASCADE;
+DROP TABLE IF EXISTS profile_chat CASCADE;
+DROP TABLE IF EXISTS message CASCADE;
+DROP TABLE IF EXISTS chat CASCADE;
+DROP TABLE IF EXISTS post CASCADE;
+DROP TABLE IF EXISTS groups CASCADE;
+DROP TABLE IF EXISTS profile CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS role CASCADE;
+DROP TABLE IF EXISTS interest CASCADE;
 
 
 CREATE TABLE users
 (
     id       BIGSERIAL PRIMARY KEY NOT NULL,
     username VARCHAR(50)           NOT NULL,
-    password VARCHAR(30)           NOT NULL,
+    password VARCHAR(60)           NOT NULL,
     status   VARCHAR(25)           NOT NULL DEFAULT 'ACTIVE'
 );
 
@@ -39,12 +39,12 @@ CREATE TABLE profile
     lastname      VARCHAR(50)                  NOT NULL,
     email         VARCHAR(100)                 NOT NULL,
     age           INTEGER                      NOT NULL,
-    users_id      BIGINT REFERENCES users (id) NOT NULL,
+    user_id       BIGINT REFERENCES users (id) NOT NULL,
     sex           VARCHAR(6)  DEFAULT '-',
     family_status VARCHAR(50) DEFAULT 'not specified',
-    town          VARCHAR(50) DEFAULT 'Unknown',
+    town          VARCHAR(50) DEFAULT 'not specified',
     phone         VARCHAR(15) DEFAULT 'not specified',
-    CHECK (sex IN ('not specified', 'MALE', 'FEMALE')),
+    CHECK (sex IN ('-', 'MALE', 'FEMALE')),
     CHECK (family_status IN ('not specified', 'married', 'not married', 'in love', 'actively looking'))
 );
 
@@ -88,7 +88,7 @@ CREATE TABLE post
     id        BIGSERIAL PRIMARY KEY NOT NULL,
     group_id  BIGINT                NOT NULL REFERENCES groups (id),
     chat_id   BIGINT                NOT NULL REFERENCES chat (id),
-    title     VARCHAR(80)           NOT NULL,
+    title     VARCHAR(50)           NOT NULL,
     text      VARCHAR(255)          NOT NULL,
     date_time TIMESTAMP             NOT NULL
 );

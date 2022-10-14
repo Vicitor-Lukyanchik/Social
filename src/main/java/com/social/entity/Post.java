@@ -28,7 +28,7 @@ public class Post {
     private Chat chat;
 
     @Column(name = "title")
-    @Size(max = 80, message = "Post title should be less than 80")
+    @Size(max = 50, message = "Post title should be less than 80")
     @NotBlank(message = "Post title can't be empty")
     private String title;
 

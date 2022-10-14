@@ -73,14 +73,6 @@ public class Message {
         this.id = id;
     }
 
-    public Chat getFriends() {
-        return chat;
-    }
-
-    public void setFriends(Chat chat) {
-        this.chat = chat;
-    }
-
     public String getText() {
         return text;
     }
