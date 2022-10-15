@@ -25,7 +25,7 @@
         <mockito-junit-jupiter.version>2.23.0</mockito-junit-jupiter.version>
         <mockito.version>4.5.1</mockito.version>
         <glassfish.version>3.0.0</glassfish.version>
-        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.0.11.Final</hibernate-validator.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
     </properties>
     <dependencies>

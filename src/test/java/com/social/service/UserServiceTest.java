@@ -144,6 +144,6 @@ public class UserServiceTest {
     public void register_ShouldThrowException_WhenMailNotValid() {
         Profile profile = new Profile("Andrey", "Lovchin", "gigmailcom", 11);
 
-        assertThrows(RuntimeException.class, () -> validator.validate(profile));
+        assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 }
