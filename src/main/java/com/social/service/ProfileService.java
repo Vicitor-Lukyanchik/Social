@@ -2,11 +2,13 @@ package com.social.service;
 
 import com.social.entity.*;
 
+import javax.validation.Valid;
+
 public interface ProfileService {
 
-    Profile save(Profile profile, User user);
+    Profile save(@Valid Profile profile, User user);
 
-    Profile update(Profile profile);
+    Profile update(@Valid Profile profile);
 
     void createChat(Profile profile, Profile anotherProfile, String chatName);
 

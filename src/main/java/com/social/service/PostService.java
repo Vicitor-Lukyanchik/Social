@@ -2,15 +2,16 @@ package com.social.service;
 
 import com.social.entity.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 public interface PostService {
 
-    Post save(Post post, Group group);
+    Post save(@Valid Post post, Group group);
 
     List<Post> findAllByGroup(Group group);
 
-    void sendPostMessage(Profile profile, Post post, Message message);
+    void sendPostMessage(Profile profile, Post post, @Valid Message message);
 
     List<Message> findMessagesByPost(Post post);
 

@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface MessageService {
 
-    Message save(Message message);
+    Message save(@Valid Message message);
 
-    void sendMessage(Profile profile, Message message, Chat chat);
+    void sendMessage(Profile profile, @Valid Message message, Chat chat);
 
     List<Message> findAllByChat(Chat chat);
 }

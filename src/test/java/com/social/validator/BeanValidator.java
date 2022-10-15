@@ -19,6 +19,6 @@ public class BeanValidator {
         if (violations.size() == 1) {
             throw new ValidationException(violations.stream().findFirst().get().getMessage());
         }
-        throw new RuntimeException("Not one validation problem");
+        throw new ServiceTestException("Not one validation problem");
     }
 }

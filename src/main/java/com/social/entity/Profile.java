@@ -44,7 +44,7 @@ public class Profile {
 
     @Column(name = "town")
     @Size(min = 2, max = 50, message = "Town name should be more than 2 and less than 50")
-    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,25}$", message = "First letter in town should be uppercase")
+    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,99}$", message = "First letter in town should be uppercase")
     private String town;
 
     @Column(name = "phone")
@@ -138,6 +138,14 @@ public class Profile {
         this.town = town;
         this.phone = phone;
         this.familyStatus = familyStatus;
+    }
+
+    public Profile(Long id, String firstname, String lastname, String email, Integer age) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.age = age;
     }
 
     public Profile(String firstname, String lastname, String email, Integer age) {
