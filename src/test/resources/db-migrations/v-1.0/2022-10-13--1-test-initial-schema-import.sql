@@ -39,7 +39,7 @@ CREATE TABLE profile
     lastname      VARCHAR(50)                  NOT NULL,
     email         VARCHAR(100)                 NOT NULL,
     age           INTEGER                      NOT NULL,
-    users_id      BIGINT REFERENCES users (id) NOT NULL,
+    user_id      BIGINT REFERENCES users (id) NOT NULL,
     sex           VARCHAR(6)  DEFAULT '-',
     family_status VARCHAR(50) DEFAULT 'not specified',
     town          VARCHAR(50) DEFAULT 'Unknown',

@@ -59,6 +59,12 @@ public class User {
         this.password = password;
     }
 
+    public User(String username, String password, Status status) {
+        this.username = username;
+        this.password = password;
+        this.status = status;
+    }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;

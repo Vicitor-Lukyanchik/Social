@@ -51,6 +51,12 @@ public class Group {
         this.posts = posts;
     }
 
+    public Group(String name, Interest interest, Profile profile) {
+        this.name = name;
+        this.interest = interest;
+        this.profile = profile;
+    }
+
     public Group(){}
 
     public Long getId() {

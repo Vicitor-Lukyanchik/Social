@@ -23,20 +23,20 @@ public class Profile {
     @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,19}$", message = "First letter in firstname should be uppercase")
     private String firstname;
 
-    @Column(name="lastname")
+    @Column(name = "lastname")
     @Size(min = 2, max = 50, message = "Lastname should be more than 2 and less than 50")
     @NotBlank(message = "Lastname can't be empty")
     @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,19}$", message = "First letter in lastname should be uppercase")
     private String lastname;
 
-    @Column(name= "email")
+    @Column(name = "email")
     @NotBlank(message = "Email can't be empty")
     @Email(message = "Email should be valid")
     @Size(max = 100, message = "Email should be less than 100")
     private String email;
 
     @Column(name = "sex")
-    @Size(max=6, message = "Sex should be more than 6")
+    @Size(max = 6, message = "Sex should be more than 6")
     @Pattern(regexp = "FEMALE|MALE|-")
     private String sex;
 
@@ -110,7 +110,30 @@ public class Profile {
         this.chats = chats;
     }
 
-    public Profile(){}
+    public Profile(String firstname, String lastname, String email, String sex, Integer age, String town,
+                   String phone, String familyStatus, User user) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.sex = sex;
+        this.age = age;
+        this.town = town;
+        this.phone = phone;
+        this.familyStatus = familyStatus;
+        this.user = user;
+    }
+
+    public Profile(String firstname, String lastname, String email, String sex, Integer age, User user) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.sex = sex;
+        this.age = age;
+        this.user = user;
+    }
+
+    public Profile() {
+    }
 
     public Long getId() {
         return id;
