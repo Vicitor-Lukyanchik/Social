@@ -19,20 +19,17 @@ public class Profile {
 
     @Column(name = "firstname")
     @Size(min = 2, max = 50, message = "Firstname should be more than 2 and less than 50")
-    @NotBlank(message = "Firstname can't be empty")
-    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,19}$", message = "First letter in firstname should be uppercase")
+    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,99}$", message = "First letter in firstname should be uppercase")
     private String firstname;
 
     @Column(name = "lastname")
     @Size(min = 2, max = 50, message = "Lastname should be more than 2 and less than 50")
-    @NotBlank(message = "Lastname can't be empty")
-    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,19}$", message = "First letter in lastname should be uppercase")
+    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,99}$", message = "First letter in lastname should be uppercase")
     private String lastname;
 
     @Column(name = "email")
-    @NotBlank(message = "Email can't be empty")
-    @Email(message = "Email should be valid")
     @Size(max = 100, message = "Email should be less than 100")
+    @Email(message = "Email should be valid")
     private String email;
 
     @Column(name = "sex")
@@ -47,7 +44,7 @@ public class Profile {
 
     @Column(name = "town")
     @Size(min = 2, max = 50, message = "Town name should be more than 2 and less than 50")
-    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,19}$", message = "First letter in town should be uppercase")
+    @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,25}$", message = "First letter in town should be uppercase")
     private String town;
 
     @Column(name = "phone")
@@ -130,6 +127,24 @@ public class Profile {
         this.sex = sex;
         this.age = age;
         this.user = user;
+    }
+
+    public Profile(String firstname, String lastname, String email, String sex, Integer age, String town, String phone, String familyStatus) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.sex = sex;
+        this.age = age;
+        this.town = town;
+        this.phone = phone;
+        this.familyStatus = familyStatus;
+    }
+
+    public Profile(String firstname, String lastname, String email, Integer age) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.age = age;
     }
 
     public Profile() {

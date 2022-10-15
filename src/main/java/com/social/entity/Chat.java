@@ -19,8 +19,7 @@ public class Chat {
     private Long id;
 
     @Column(name = "name")
-    @Size(max = 50, message = "Chat name should be less than 50")
-    @NotBlank(message = "Chat name can't be empty")
+    @Size(min = 1, max = 50, message = "Chat name should be less than 50 and more than 1")
     private String name;
 
     @ManyToMany(mappedBy = "chats", fetch = FetchType.LAZY)

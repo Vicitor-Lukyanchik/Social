@@ -28,8 +28,7 @@ public class Message {
     private Profile profile;
 
     @Column(name = "text")
-    @Size(max = 255, message = "Message should be less than 255")
-    @NotBlank(message = "Message text can't be empty")
+    @Size(min = 1, max = 255, message = "Message should be less than 255 and more than 1")
     private String text;
 
     @Column(name = "date_time")

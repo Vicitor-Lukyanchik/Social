@@ -28,13 +28,11 @@ public class Post {
     private Chat chat;
 
     @Column(name = "title")
-    @Size(max = 50, message = "Post title should be less than 80")
-    @NotBlank(message = "Post title can't be empty")
+    @Size(min = 1, max = 2, message = "Post title should be less than 50 and more than 1")
     private String title;
 
     @Column(name = "text")
-    @Size(max = 255, message = "Post text should be less than 255")
-    @NotBlank(message = "Post text can't be empty")
+    @Size(min = 1, max = 255, message = "Post text should be less than 255 and more than 1")
     private String text;
 
     @Column(name = "date_time")
@@ -64,7 +62,8 @@ public class Post {
         this.dateTime = dateTime;
     }
 
-    public Post() {}
+    public Post() {
+    }
 
     public Long getId() {
         return id;

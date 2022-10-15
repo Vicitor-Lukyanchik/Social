@@ -1,7 +1,6 @@
 package com.social.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
@@ -19,12 +18,10 @@ public class User {
     private Long id;
 
     @Column(name = "username")
-    @NotBlank(message = "Username can't be empty")
     @Size(min = 4, max = 50, message = "Username should be more then 4 and less than 50")
     private String username;
 
     @Column(name = "password")
-    @NotBlank(message = "Password can't be empty")
     @Size(min = 4, max = 30, message = "Password should be more then 4 and less than 30")
     private String password;
 

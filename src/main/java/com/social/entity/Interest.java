@@ -17,8 +17,7 @@ public class Interest {
     private Long id;
 
     @Column(name = "name")
-    @Size(max = 50, message = "Interest name should be less than 50")
-    @NotBlank(message = "Interest name can't be empty")
+    @Size(min = 1, max = 50, message = "Interest name should be less than 50 and more than 1")
     private String name;
 
     public Interest(Long id, String name) {
