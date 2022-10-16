@@ -1,9 +1,6 @@
 package com.social.service.impl;
 
-import com.social.entity.Chat;
-import com.social.entity.Group;
-import com.social.entity.Profile;
-import com.social.entity.User;
+import com.social.entity.*;
 import com.social.repository.ProfileRepository;
 import com.social.service.ChatService;
 import com.social.service.GroupService;
@@ -25,7 +22,6 @@ import java.util.Optional;
 public class ProfileServiceImpl implements ProfileService {
 
     private static final String NOT_SPECIFIED = "not specified";
-    private static final String SEX_DEFAULT = "-";
     private static final String CHAT_NAME_DELIMITER = " | ";
 
     private final ProfileRepository profileRepository;
@@ -41,7 +37,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private Profile buildProfile(Profile profile, User user) {
         profile.setUser(user);
-        profile.setSex(SEX_DEFAULT);
+        profile.setSex(Sex.UNDEFINED);
         profile.setFamilyStatus(NOT_SPECIFIED);
         profile.setTown(NOT_SPECIFIED);
         profile.setPhone(NOT_SPECIFIED);

@@ -35,7 +35,7 @@ public class GroupRepositoryTest {
     public void save_ShouldSaveGroup() {
         User user = userRepository.save(new User("user", "user", Status.ACTIVE));
         Profile profile = profileRepository.save(new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                "MALE", 25, user));
+                Sex.MALE, 25, user));
         Interest interest = interestRepository.save(new Interest("football"));
 
         Group expected = new Group("my group", interest, profile);

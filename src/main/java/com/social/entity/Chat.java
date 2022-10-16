@@ -1,5 +1,7 @@
 package com.social.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -7,15 +9,16 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Builder
 @Table(name = "chat")
-@SequenceGenerator(
-        name = "chat-gen",
-        sequenceName = "chat_id_seq",
-        initialValue = 1, allocationSize = 1)
 public class Chat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chat-gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -50,52 +53,5 @@ public class Chat {
     public Chat(String name, List<Profile> profiles) {
         this.name = name;
         this.profiles = profiles;
-    }
-
-    public Chat(){}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Profile> getProfiles() {
-        return profiles;
-    }
-
-    public void setProfiles(List<Profile> profiles) {
-        this.profiles = profiles;
-    }
-
-    public List<Message> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Chat chat = (Chat) o;
-        return Objects.equals(id, chat.id) && Objects.equals(name, chat.name) && Objects.equals(profiles, chat.profiles) && Objects.equals(messages, chat.messages);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, profiles, messages);
     }
 }

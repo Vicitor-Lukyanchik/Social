@@ -40,7 +40,7 @@ CREATE TABLE profile
     email         VARCHAR(100)                 NOT NULL,
     age           INTEGER                      NOT NULL,
     user_id       BIGINT REFERENCES users (id) NOT NULL,
-    sex           VARCHAR(6)  DEFAULT '-',
+    sex           VARCHAR(10)  DEFAULT 'UNDEFINED',
     family_status VARCHAR(50) DEFAULT 'not specified',
     town          VARCHAR(50) DEFAULT 'not specified',
     phone         VARCHAR(15) DEFAULT 'not specified',

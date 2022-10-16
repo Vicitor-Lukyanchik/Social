@@ -1,8 +1,6 @@
 package com.social.service;
 
 import com.social.entity.Interest;
-import com.social.entity.Profile;
-import com.social.entity.User;
 import com.social.repository.InterestRepository;
 import com.social.service.exception.ServiceException;
 import com.social.validator.BeanValidator;

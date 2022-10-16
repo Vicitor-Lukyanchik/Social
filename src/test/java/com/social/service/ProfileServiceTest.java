@@ -125,7 +125,7 @@ public class ProfileServiceTest {
     @Test
     public void save_ShouldSaveProfile() {
         User user = new User("useruser", "23451234");
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18, user);
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18, user);
 
         given(profileRepository.save(isA(Profile.class))).willReturn(profile);
 
@@ -135,16 +135,8 @@ public class ProfileServiceTest {
     }
     
     @Test
-    public void update_ShouldThrowException_WhenSexNotMaleOrFemale() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MLE", 18,
-                "Baranovichi", "336344224", "married");
-
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
-    }
-    
-    @Test
     public void update_ShouldThrowException_WhenTownFirstLetterLowercase() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "baranovichi", "336344224", "married");
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
@@ -152,7 +144,7 @@ public class ProfileServiceTest {
     
     @Test
     public void update_ShouldThrowException_WhenTownLessThan2() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "B", "336344224", "married");
 
         assertThrows(ServiceTestException.class, () -> validator.validate(profile));
@@ -160,7 +152,7 @@ public class ProfileServiceTest {
 
     @Test
     public void update_ShouldThrowException_WhenTownMoreThan50() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Bfghjkllkjhgfdfghjkllkjhgfdfghjklkjhgcdfghjkllkjhgfdfghjk", "336344224", "married");
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
@@ -168,7 +160,7 @@ public class ProfileServiceTest {
 
     @Test
     public void update_ShouldThrowException_WhenPhoneLessThan7() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Baranovichi", "3363", "married");
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
@@ -176,7 +168,7 @@ public class ProfileServiceTest {
 
     @Test
     public void update_ShouldThrowException_WhenPhoneMoreThan15() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Baranovichi", "331234567890087663", "married");
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
@@ -184,7 +176,7 @@ public class ProfileServiceTest {
 
     @Test
     public void update_ShouldThrowException_WhenPhoneMoreThan50() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Baranovichi", "3312363", "xfcdcvgfbhfnjmkkfjhnngvddddfcdsdfghjkjkhbgfdsdfghjk");
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
@@ -193,7 +185,7 @@ public class ProfileServiceTest {
     @Test
     public void update_ShouldUpdateProfile() {
         User user = new User(1L, "useruser", "23451234", new ArrayList<>(), Status.ACTIVE);
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Baranovichi", "336344224", "married", user);
 
         given(profileRepository.save(isA(Profile.class))).willReturn(profile);
@@ -275,7 +267,7 @@ public class ProfileServiceTest {
     @Test
     public void findByUser_ShouldReturnProfile() {
         User user = new User("useruser", "23451234");
-        Profile expected = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile expected = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Baranovichi", "336344224", "married");
 
         given(profileRepository.findByUser(isA(User.class))).willReturn(Optional.of(expected));
@@ -293,7 +285,7 @@ public class ProfileServiceTest {
 
     @Test
     public void findById_ShouldReturnProfile() {
-        Profile expected = new Profile("Andrey", "Lovchin", "gig@gmail.com", "MALE", 18,
+        Profile expected = new Profile("Andrey", "Lovchin", "gig@gmail.com", Sex.MALE, 18,
                 "Baranovichi", "336344224", "married");
 
         given(profileRepository.findById(isA(Long.class))).willReturn(Optional.of(expected));

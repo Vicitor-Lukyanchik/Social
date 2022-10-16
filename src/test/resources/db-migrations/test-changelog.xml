@@ -4,5 +4,5 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <include file="v-1.0/2022-10-13--1-test-initial-schema-import.sql" relativeToChangelogFile="true"/>
+    <include file="v-1.0/2022-10-13--1-initial-schema-import.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

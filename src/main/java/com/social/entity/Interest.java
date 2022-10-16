@@ -1,19 +1,22 @@
 package com.social.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Builder
 @Table(name = "interest")
-@SequenceGenerator(
-        name = "interest-gen",
-        sequenceName = "interest_id_seq",
-        initialValue = 1, allocationSize = 1)
 public class Interest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "interest-gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
@@ -26,25 +29,6 @@ public class Interest {
     }
 
     public Interest(String name) {
-        this.name = name;
-    }
-
-    public Interest() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 }

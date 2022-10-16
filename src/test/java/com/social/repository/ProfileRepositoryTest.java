@@ -1,6 +1,7 @@
 package com.social.repository;
 
 import com.social.entity.Profile;
+import com.social.entity.Sex;
 import com.social.entity.Status;
 import com.social.entity.User;
 import org.junit.Test;
@@ -35,16 +36,7 @@ public class ProfileRepositoryTest {
         User user = userRepository.save(new User("user", "user", Status.ACTIVE));
 
         Profile profile = new Profile("Igorigorgorigorgorigorgorigorgorigorgorigorgorigorgo",
-                "Pirov", "igorpirov@mail.ru", "MALE", 25, user);
-
-        assertThrows(Exception.class, () -> profileRepository.save(profile));
-    }
-
-    @Test
-    public void save_ShouldThrowException_WhenSexNotMaleOrFemale() {
-        User user = userRepository.save(new User("user", "user", Status.ACTIVE));
-
-        Profile profile = new Profile("Igorgo", "Pirov", "igorpirov@mail.ru", "MLE", 25, user);
+                "Pirov", "igorpirov@mail.ru", Sex.MALE, 25, user);
 
         assertThrows(Exception.class, () -> profileRepository.save(profile));
     }
@@ -54,7 +46,7 @@ public class ProfileRepositoryTest {
         User user = userRepository.save(new User("user", "user", Status.ACTIVE));
 
         Profile expected = new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                "MALE", 25, user);
+                Sex.MALE, 25, user);
 
         Profile actual = profileRepository.save(expected);
         assertEquals(expected, actual);

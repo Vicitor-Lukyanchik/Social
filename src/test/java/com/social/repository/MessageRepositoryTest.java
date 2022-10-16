@@ -39,7 +39,7 @@ public class MessageRepositoryTest {
         Chat chat = chatRepository.save(new Chat("Football", new ArrayList<>()));
         User user = userRepository.save(new User("user", "user", Status.ACTIVE));
         Profile profile = profileRepository.save(new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                "MALE", 25, user));
+                Sex.MALE, 25, user));
 
         Message expected = new Message(chat, profile, "Hello", LocalDateTime.now());
         Message actual = messageRepository.save(expected);
