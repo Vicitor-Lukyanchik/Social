@@ -1,6 +1,5 @@
 package com.social.service.impl;
 
-import com.social.entity.Group;
 import com.social.entity.Interest;
 import com.social.repository.InterestRepository;
 import com.social.service.InterestService;
@@ -11,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,6 +28,29 @@ public class InterestServiceImpl implements InterestService {
         }
         Interest result = interestRepository.save(interest);
         return result;
+    }
+
+    @Override
+    @Transactional
+    public Interest update(@Valid Interest interest) {
+        findById(interest.getId());
+        if (isExist(interest.getName())){
+            throw new ServiceException("Interest have been created with name " + interest.getName());
+        }
+        return interestRepository.save(interest);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Interest interest) {
+        findById(interest.getId());
+        interestRepository.delete(interest);
+    }
+
+    @Override
+    @Transactional
+    public List<Interest> findAll() {
+        return interestRepository.findAll();
     }
 
     @Override

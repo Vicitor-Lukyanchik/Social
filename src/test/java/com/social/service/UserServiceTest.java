@@ -1,7 +1,6 @@
 package com.social.service;
 
 import com.social.entity.Profile;
-import com.social.entity.Status;
 import com.social.entity.User;
 import com.social.repository.UserRepository;
 import com.social.service.exception.UserNotFoundException;
@@ -16,9 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
+import static com.social.Constants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
@@ -45,116 +44,129 @@ public class UserServiceTest {
     private BeanValidator validator;
 
     @Test
-    public void register_ShouldThrowException_WhenUsernameIsEmpty() {
-        User user = new User("", "1234", new ArrayList<>(), Status.ACTIVE);
+    public void registerShouldThrowExceptionWhenUsernameIsEmpty() {
+        User user = User.builder().username("").password(PASSWORD).status(STATUS).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(user));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenUsernameLessThan4() {
-        User user = new User("use", "23451234");
+    public void registerShouldThrowExceptionWhenUsernameLessThan4() {
+        User user = User.builder().username("use").password(PASSWORD).status(STATUS).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(user));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenUsernameMoreThan50() {
-        User user = new User("abcdefgsdfghjkjjhvbnhjknkmabcdefgabcdefgabcdefgabcde", "23451234");
+    public void registerShouldThrowExceptionWhenUsernameMoreThan50() {
+        User user = User.builder().username("abcdefgsdfghjkjjhvbnhjknkmabcdefgabcdefgabcdefgabcde")
+                .password(PASSWORD).status(STATUS).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(user));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenPasswordIsEmpty() {
-        User user = new User("user", "");
+    public void registerShouldThrowExceptionWhenPasswordIsEmpty() {
+        User user = User.builder().username(USERNAME).password("").status(STATUS).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(user));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenFirstnameMoreThan50() {
-        Profile profile = new Profile("Anduhoogfoooodfiuytyryuioiuytyuiouiytyuioiuytryuiopiuytrtyuighjuyy",
-                "Lovchin", "gig@gmail.com", 12);
+    public void registerShouldThrowExceptionWhenFirstnameMoreThan50() {
+        Profile profile = Profile.builder().firstname("Anduhoogfoooodfiuytyryuioiuytyuiouiytyuioiuytryuiopiuytrtyuighjuyy")
+                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenFirstnameLessThan2() {
-        Profile profile = new Profile("A", "Lovchin", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenFirstnameLessThan2() {
+        Profile profile = Profile.builder().firstname("A")
+                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
 
         assertThrows(ServiceTestException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenFirstnameIsEmpty() {
-        Profile profile = new Profile("", "Lovchin", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenFirstnameIsEmpty() {
+        Profile profile = Profile.builder().firstname("")
+                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
 
         assertThrows(ServiceTestException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenFirstLetterInFirstnameLowercase() {
-        Profile profile = new Profile("andrey", "Lovchin", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenFirstLetterInFirstnameLowercase() {
+        Profile profile = Profile.builder().firstname("andrey")
+                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenLastnameMoreThan50() {
-        Profile profile = new Profile("Andrey",
-                "Lovchinovchinovchinovchinovchinovchinovchinovchinovchinovchinovchin", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenLastnameMoreThan50() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname("Lovchinovchinovchinovchinovchinovchinovchinovchinovchinovchinovchin").email(EMAIL).age(AGE).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenLastnameLessThan2() {
-        Profile profile = new Profile("Andrey", "D", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenLastnameLessThan2() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname("L").email(EMAIL).age(AGE).build();
 
         assertThrows(ServiceTestException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenLastnameIsEmpty() {
-        Profile profile = new Profile("Andrey", "", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenLastnameIsEmpty() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname("").email(EMAIL).age(AGE).build();
 
         assertThrows(ServiceTestException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenFirstLetterInLastnameLowercase() {
-        Profile profile = new Profile("Andrey", "lovchin", "gig@gmail.com", 18);
+    public void registerShouldThrowExceptionWhenFirstLetterInLastnameLowercase() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname("lovchin").email(EMAIL).age(AGE).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenAgeLessThan6() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", 5);
+    public void registerShouldThrowExceptionWhenAgeLessThan6() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL).age(5).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenAgeMoreThan120() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", 121);
+    public void registerShouldThrowExceptionWhenAgeMoreThan120() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL).age(121).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldThrowException_WhenMailNotValid() {
-        Profile profile = new Profile("Andrey", "Lovchin", "gigmailcom", 11);
+    public void registerShouldThrowExceptionWhenMailNotValid() {
+        Profile profile = Profile.builder().firstname(FIRSTNAME)
+                .lastname(LASTNAME).email("gimail.ru").age(AGE).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
-    public void register_ShouldRegisterUser() {
-        User user = new User("useruser", "23451234");
-        Profile profile = new Profile("Andrey", "Lovchin", "gig@gmail.com", 18);
+    public void registerShouldRegisterUser() {
+        User user = User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build();
+        Profile profile = Profile.builder()
+                .firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL)
+                .sex(SEX).age(AGE).build();
 
         given(profileService.save(isA(Profile.class), isA(User.class))).willReturn(profile);
         given(userRepository.save(isA(User.class))).willReturn(user);
@@ -167,35 +179,35 @@ public class UserServiceTest {
 
 
     @Test
-    public void findByUsername_ShouldThrowException_WhenUserNotFound() {
+    public void findByUsernameShouldThrowExceptionWhenUserNotFound() {
         given(userRepository.findByUsername(isA(String.class))).willReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.findByUsername("useruser"));
+        assertThrows(UserNotFoundException.class, () -> userService.findByUsername(USERNAME));
     }
 
     @Test
-    public void findByUsername_ShouldReturnUser() {
-        User expected = new User("useruser", "23451234");
+    public void findByUsernameShouldReturnUser() {
+        User expected = new User(USERNAME, PASSWORD);
 
         given(userRepository.findByUsername(isA(String.class))).willReturn(Optional.of(expected));
-        User actual = userService.findByUsername("useruser");
+        User actual = userService.findByUsername(USERNAME);
 
         assertEquals(expected, actual);
     }
 
     @Test
-    public void findById_ShouldThrowException_WhenUserNotFound() {
+    public void findByIdShouldThrowExceptionWhenUserNotFound() {
         given(userRepository.findById(isA(Long.class))).willReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> userService.findById(1l));
+        assertThrows(UserNotFoundException.class, () -> userService.findById(ID));
     }
 
     @Test
-    public void findById_ShouldReturnUser() {
-        User expected = new User("useruser", "23451234");
+    public void findByIdShouldReturnUser() {
+        User expected = new User(USERNAME, PASSWORD);
 
         given(userRepository.findById(isA(Long.class))).willReturn(Optional.of(expected));
-        User actual = userService.findById(1l);
+        User actual = userService.findById(ID);
 
         assertEquals(expected, actual);
     }

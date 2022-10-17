@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static com.social.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,14 +36,18 @@ public class MessageRepositoryTest {
     }
 
     @Test
-    public void save_ShouldSaveMessage() {
-        Chat chat = chatRepository.save(new Chat("Football", new ArrayList<>()));
-        User user = userRepository.save(new User("user", "user", Status.ACTIVE));
-        Profile profile = profileRepository.save(new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                Sex.MALE, 25, user));
+    public void saveShouldSaveMessage() {
+        Chat chat = chatRepository.save(Chat.builder().name(CHAT_NAME).messages(new ArrayList<>()).build());
+        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
+        Profile profile = profileRepository.save(Profile.builder()
+                .firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL)
+                .sex(SEX).age(AGE).user(user).build());
 
-        Message expected = new Message(chat, profile, "Hello", LocalDateTime.now());
+        Message expected = Message.builder().chat(chat).profile(profile)
+                .text(MESSAGE_TEXT).dateTime(LocalDateTime.now()).build();
+
         Message actual = messageRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getText(), actual.getText());
     }
 }

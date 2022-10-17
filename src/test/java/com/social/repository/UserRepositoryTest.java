@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.social.Constants.PASSWORD;
+import static com.social.Constants.USERNAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -25,16 +27,16 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void save_ShouldThrowException_WhenUsernameLengthMoreThan50() {
-        User user = new User("zxcvbnmdfghjkqwertyuiopasdfghjklqwertyuiopasdfghjkl", "23451234");
+    public void saveShouldThrowExceptionWhenUsernameLengthMoreThan50() {
+        User user = new User("zxcvbnmdfghjkqwertyuiopasdfghjklqwertyuiopasdfghjkl", PASSWORD);
 
         assertThrows(Exception.class, () -> userRepository.save(user));
     }
 
     @Test
-    public void save_ShouldSaveUser() {
-        User expected = new User("vicitor", "123432", Status.ACTIVE);
+    public void saveShouldSaveUser() {
+        User expected = new User(USERNAME, PASSWORD, Status.ACTIVE);
         User actual = userRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getUsername(), actual.getUsername());
     }
 }

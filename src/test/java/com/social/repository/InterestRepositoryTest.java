@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.social.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,9 +24,9 @@ public class InterestRepositoryTest {
     }
 
     @Test
-    public void save_ShouldSaveInterest() {
-        Interest expected = new Interest("football");
+    public void saveShouldSaveInterest() {
+        Interest expected = new Interest(INTEREST_NAME);
         Interest actual = interestRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getName(), actual.getName());
     }
 }

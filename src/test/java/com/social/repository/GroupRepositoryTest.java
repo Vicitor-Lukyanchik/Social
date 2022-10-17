@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static com.social.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,14 +33,16 @@ public class GroupRepositoryTest {
     }
 
     @Test
-    public void save_ShouldSaveGroup() {
-        User user = userRepository.save(new User("user", "user", Status.ACTIVE));
-        Profile profile = profileRepository.save(new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                Sex.MALE, 25, user));
-        Interest interest = interestRepository.save(new Interest("football"));
+    public void saveShouldSaveGroup() {
+        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
+        Profile profile = profileRepository.save(Profile.builder()
+                .firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL)
+                .sex(SEX).age(AGE).user(user).build());
+        Interest interest = interestRepository.save(new Interest(INTEREST_NAME));
 
-        Group expected = new Group("my group", interest, profile);
+        Group expected = groupRepository.save(Group.builder().name(GROUP_NAME).profile(profile).interest(interest).build());
         Group actual = groupRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getName(), actual.getName());
     }
 }

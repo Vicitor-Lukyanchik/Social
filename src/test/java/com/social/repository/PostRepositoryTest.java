@@ -10,7 +10,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import static com.social.Constants.*;
+import static com.social.Constants.AGE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.in;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -41,18 +44,19 @@ public class PostRepositoryTest {
     }
 
     @Test
-    public void save_ShouldSavePost() {
-        User user = userRepository.save(new User("user", "user", Status.ACTIVE));
-        Profile profile = profileRepository.save(new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                Sex.MALE, 25, user));
-        Interest interest = interestRepository.save(new Interest("football"));
-        Group group = groupRepository.save(new Group("my group", interest, profile));
+    public void saveShouldSavePost() {
+        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
+        Profile profile = profileRepository.save(Profile.builder()
+                .firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL)
+                .sex(SEX).age(AGE).user(user).build());
+        Interest interest = interestRepository.save(new Interest(INTEREST_NAME));
+        Group group = groupRepository.save(Group.builder().name(GROUP_NAME).profile(profile).interest(interest).build());
+        Chat chat = chatRepository.save(Chat.builder().name(CHAT_NAME).messages(new ArrayList<>()).build());
 
-        Chat chat = chatRepository.save(new Chat("Football is good", new ArrayList<>()));
-
-        Post expected = new Post(group, chat, "Football is good",
-                "wertyuiopottyuio tertyyuu jjhggffd gghjjk mn", LocalDateTime.now());
+        Post expected = Post.builder().group(group).chat(chat).title(POST_TITLE)
+                .text(POST_TEXT).dateTime(LocalDateTime.now()).build();
         Post actual = postRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getText(), actual.getText());
     }
 }

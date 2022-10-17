@@ -32,7 +32,7 @@ public class Post {
     private Chat chat;
 
     @Column(name = "title")
-    @Size(min = 1, max = 2, message = "Post title should be less than 50 and more than 1")
+    @Size(min = 1, max = 50, message = "Post title should be less than 50 and more than 1")
     private String title;
 
     @Column(name = "text")

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Show</title>
+</head>
+<body>
+<p th:text="${interest.getId()}">id</p>
+<p th:text="${interest.getName()}">name</p>
+
+<a th:href="@{/interest/{id}/edit(id=${interest.getId()})}">Edit</a>
+
+<form th:method="POST" th:action="@{/interest/{id}/delete(id=${interest.getId()})}">
+    <input type="submit" value="Delete"/>
+</form>
+
+</body>
+</html>

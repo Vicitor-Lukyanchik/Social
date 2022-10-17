@@ -1,8 +1,6 @@
 package com.social.repository;
 
 import com.social.entity.Profile;
-import com.social.entity.Sex;
-import com.social.entity.Status;
 import com.social.entity.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,8 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-
+import static com.social.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,23 +29,27 @@ public class ProfileRepositoryTest {
     }
 
     @Test
-    public void save_ShouldThrowException_WhenFirstnameLengthMoreThan50() {
-        User user = userRepository.save(new User("user", "user", Status.ACTIVE));
+    public void saveShouldThrowExceptionWhenFirstnameLengthMoreThan50() {
+        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
 
-        Profile profile = new Profile("Igorigorgorigorgorigorgorigorgorigorgorigorgorigorgo",
-                "Pirov", "igorpirov@mail.ru", Sex.MALE, 25, user);
+        Profile profile = Profile.builder()
+                .firstname("Igorigorgorigorgorigorgorigorgorigorgorigorgorigorgo")
+                .lastname(LASTNAME).email(EMAIL)
+                .sex(SEX).age(AGE).user(user).build();
 
         assertThrows(Exception.class, () -> profileRepository.save(profile));
     }
 
     @Test
-    public void save_ShouldSaveProfile() {
-        User user = userRepository.save(new User("user", "user", Status.ACTIVE));
+    public void saveShouldSaveProfile() {
+        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
 
-        Profile expected = new Profile("Igor", "Pirov", "igorpirov@mail.ru",
-                Sex.MALE, 25, user);
+        Profile expected = Profile.builder()
+                .firstname(FIRSTNAME)
+                .lastname(LASTNAME).email(EMAIL)
+                .sex(SEX).age(AGE).user(user).build();
 
         Profile actual = profileRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getFirstname(), actual.getFirstname());
     }
 }

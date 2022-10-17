@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.social.Constants.ROLE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
@@ -31,18 +32,18 @@ public class RoleServiceTest {
     private RoleRepository roleRepository;
 
     @Test
-    public void findByUsername_ShouldThrowException_WhenUserNotFound() {
+    public void findByUsernameShouldThrowExceptionWhenUserNotFound() {
         given(roleRepository.findByName(isA(String.class))).willReturn(new ArrayList<>());
 
-        assertThrows(ServiceException.class, () -> roleService.findByName("useruser"));
+        assertThrows(ServiceException.class, () -> roleService.findByName(ROLE_NAME));
     }
 
     @Test
-    public void findByUsername_ShouldReturnUser() {
-        List<Role> role = Arrays.asList(new Role("user", Status.ACTIVE));
+    public void findByUsernameShouldReturnUser() {
+        List<Role> role = Arrays.asList(new Role(ROLE_NAME, Status.ACTIVE));
 
         given(roleRepository.findByName(isA(String.class))).willReturn(role);
-        List<Role> actual = roleService.findByName("user");
+        List<Role> actual = roleService.findByName(ROLE_NAME);
 
         assertEquals(role, actual);
     }

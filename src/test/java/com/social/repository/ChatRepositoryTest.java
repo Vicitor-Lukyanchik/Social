@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 
+import static com.social.Constants.CHAT_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,9 +27,9 @@ public class ChatRepositoryTest {
     }
 
     @Test
-    public void save_ShouldSaveChat() {
-        Chat expected = new Chat("Football", new ArrayList<>());
+    public void saveShouldSaveChat() {
+        Chat expected = new Chat(CHAT_NAME, new ArrayList<>());
         Chat actual = chatRepository.save(expected);
-        assertEquals(expected, actual);
+        assertEquals(expected.getName(), actual.getName());
     }
 }
