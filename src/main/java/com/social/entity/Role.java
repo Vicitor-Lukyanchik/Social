@@ -1,9 +1,6 @@
 package com.social.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,16 +9,13 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "role")
-@SequenceGenerator(
-        name = "role-gen",
-        sequenceName = "role_id_seq",
-        initialValue = 1, allocationSize = 1)
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role-gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

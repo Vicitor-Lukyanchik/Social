@@ -1,30 +1,29 @@
 package com.social.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Builder
 @Table(name = "users")
-@SequenceGenerator(
-        name = "users-gen",
-        sequenceName = "users_id_seq",
-        initialValue = 1, allocationSize = 1)
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users-gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "username")
-    @NotBlank(message = "Username can't be empty")
     @Size(min = 4, max = 50, message = "Username should be more then 4 and less than 50")
     private String username;
 
     @Column(name = "password")
-    @NotBlank(message = "Password can't be empty")
     @Size(min = 4, max = 30, message = "Password should be more then 4 and less than 30")
     private String password;
 
@@ -59,64 +58,14 @@ public class User {
         this.password = password;
     }
 
-    public User(String username, String password) {
+    public User(String username, String password, Status status) {
         this.username = username;
         this.password = password;
-    }
-
-    public User() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
         this.status = status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles) && status == user.status;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, password, roles, status);
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }

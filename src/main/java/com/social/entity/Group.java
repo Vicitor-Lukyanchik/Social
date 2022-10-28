@@ -1,5 +1,7 @@
 package com.social.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -7,17 +9,20 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@Builder
 @Table(name = "groups")
-@SequenceGenerator(name = "groups-gen", sequenceName = "groups_id_seq", initialValue = 1, allocationSize = 1)
 public class Group {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "groups-gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name")
-    @Size(max = 50, message = "Group name should be less than 50")
-    @NotBlank(message = "Group name can't be empty")
+    @Size(min = 1, max = 50, message = "Group name should be less than 50 and more than 1")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -51,66 +56,9 @@ public class Group {
         this.posts = posts;
     }
 
-    public Group(){}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Group(String name, Interest interest, Profile profile) {
         this.name = name;
-    }
-
-    public Interest getInterest() {
-        return interest;
-    }
-
-    public void setInterest(Interest interest) {
         this.interest = interest;
-    }
-
-    public List<Profile> getJoinProfiles() {
-        return joinProfiles;
-    }
-
-    public void setJoinProfiles(List<Profile> joinProfiles) {
-        this.joinProfiles = joinProfiles;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Group group = (Group) o;
-        return Objects.equals(id, group.id) && Objects.equals(name, group.name) && Objects.equals(interest, group.interest) && Objects.equals(joinProfiles, group.joinProfiles) && Objects.equals(profile, group.profile) && Objects.equals(posts, group.posts);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, interest, joinProfiles, profile, posts);
     }
 }
