@@ -9,7 +9,6 @@ import com.social.service.MessageService;
 import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -26,14 +25,12 @@ public class MessageServiceImpl implements MessageService {
     private final ChatService chatService;
 
     @Override
-    @Transactional
     public Message save(@Valid Message message) {
         Message result = messageRepository.save(message);
         return result;
     }
 
     @Override
-    @Transactional
     public void sendMessage(Profile profile, @Valid Message message, Chat chat) {
         if (!chatService.isExist(chat)) {
             throw new ServiceException("Chat haven't been founded by id " + chat.getId());
@@ -44,7 +41,6 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    @Transactional
     public List<Message> findAllByChat(@Valid Chat chat) {
         if (!chatService.isExist(chat)) {
             throw new ServiceException("Chat haven't been founded by id " + chat.getId());

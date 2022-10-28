@@ -7,6 +7,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -21,25 +22,10 @@ public class Role {
     @Column
     private String name;
 
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private List<User> users;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private Status status;
-
-    public Role(String name, List<User> users, Status status) {
-        this.name = name;
-        this.users = users;
-        this.status = status;
-    }
-
-    public Role(String name, Status status) {
-        this.name = name;
-        this.status = status;
-    }
-
-    public Role(String name) {
-        this.name = name;
-    }
 }

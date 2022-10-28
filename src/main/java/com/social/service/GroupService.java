@@ -10,7 +10,7 @@ public interface GroupService {
 
     Group save(@Valid Group group, Profile profile, Interest interest);
 
-    boolean isExist(Group group);
+    boolean isExist(Long id);
 
     Group findById(Long id);
 }

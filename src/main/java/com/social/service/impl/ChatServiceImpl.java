@@ -6,7 +6,6 @@ import com.social.service.ChatService;
 import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -26,7 +25,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Transactional
     public boolean isExist(Chat chat) {
         try {
             findById(chat.getId());
@@ -37,7 +35,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    @Transactional
     public Chat findById(Long id) {
         Optional<Chat> chat = chatRepository.findById(id);
 

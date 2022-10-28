@@ -54,16 +54,10 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isUsernameUsed(String username) {
-        try {
-            findByUsername(username);
-            return true;
-        } catch (UserNotFoundException e) {
-            return false;
-        }
+        return userRepository.findByUsername(username).isPresent();
     }
 
     @Override
-    @Transactional
     public User findByUsername(String username) {
         Optional<User> result = userRepository.findByUsername(username);
 
@@ -74,7 +68,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public User findById(Long id) {
         Optional<User> user = userRepository.findById(id);
 

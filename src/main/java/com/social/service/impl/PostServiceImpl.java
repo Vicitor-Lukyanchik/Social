@@ -2,11 +2,13 @@ package com.social.service.impl;
 
 import com.social.entity.*;
 import com.social.repository.PostRepository;
-import com.social.service.*;
+import com.social.service.ChatService;
+import com.social.service.GroupService;
+import com.social.service.MessageService;
+import com.social.service.PostService;
 import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -26,36 +28,34 @@ public class PostServiceImpl implements PostService {
     private final MessageService messageService;
 
     @Override
-    @Transactional
-    public Post save(@Valid Post post, Group group) {
-        isGroupExist(group);
-        return buildPost(post, group);
+    public Post save(@Valid Post post, Long groupId) {
+        isGroupExist(groupId);
+        return buildPost(post, groupService.findById(groupId));
     }
 
     private Post buildPost(Post post, Group group) {
         post.setGroup(group);
-        Chat chat = chatService.save(new Chat(post.getTitle(), group.getJoinProfiles()));
+        Chat chat = chatService.save(Chat.builder().name(post.getTitle())
+                .profiles(group.getJoinProfiles()).build());
         post.setChat(chat);
         Post result = postRepository.save(post);
         return result;
     }
 
     @Override
-    @Transactional
-    public List<Post> findAllByGroup(Group group) {
-        isGroupExist(group);
-        List<Post> posts = postRepository.findAllByGroup(group);
+    public List<Post> findAllByGroupId(Long groupId) {
+        isGroupExist(groupId);
+        List<Post> posts = postRepository.findAllByGroup(groupService.findById(groupId));
         return posts.stream().sorted(Comparator.comparing(Post::getDateTime)).collect(Collectors.toList());
     }
 
-    private void isGroupExist(Group group) {
-        if (!groupService.isExist(group)) {
-            throw new ServiceException("Group haven't been founded by id " + group.getId());
+    private void isGroupExist(Long id) {
+        if (!groupService.isExist(id)) {
+            throw new ServiceException("Group haven't been founded by id " + id);
         }
     }
 
     @Override
-    @Transactional
     public void sendPostMessage(Profile profile, Post post, @Valid Message message) {
         if (!isExist(post)) {
             throw new ServiceException("Post haven't been founded by id : " + post.getId());
@@ -66,7 +66,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public List<Message> findMessagesByPost(Post post) {
         if (!isExist(post)) {
             throw new ServiceException("Post haven't been founded by id : " + post.getId());
@@ -86,7 +85,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public boolean isExist(Post post) {
         try {
             findById(post.getId());
@@ -97,7 +95,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public Post findById(Long id) {
         Optional<Post> post = postRepository.findById(id);
 

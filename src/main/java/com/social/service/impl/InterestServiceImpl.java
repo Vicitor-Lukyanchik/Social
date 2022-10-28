@@ -6,7 +6,6 @@ import com.social.service.InterestService;
 import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -21,9 +20,8 @@ public class InterestServiceImpl implements InterestService {
     private final InterestRepository interestRepository;
 
     @Override
-    @Transactional
     public Interest save(@Valid Interest interest) {
-        if (isExist(interest.getName())){
+        if (isExist(interest.getName())) {
             throw new ServiceException("Interest have been created with name " + interest.getName());
         }
         Interest result = interestRepository.save(interest);
@@ -31,40 +29,40 @@ public class InterestServiceImpl implements InterestService {
     }
 
     @Override
-    @Transactional
-    public Interest update(@Valid Interest interest) {
-        findById(interest.getId());
-        if (isExist(interest.getName())){
-            throw new ServiceException("Interest have been created with name " + interest.getName());
+    public Interest update(Long id, @Valid Interest updatedInterest) {
+        isPresent(id);
+        if (isExist(updatedInterest.getName())) {
+            throw new ServiceException("Interest have been created with name " + updatedInterest.getName());
         }
-        return interestRepository.save(interest);
+        Interest interest = interestRepository.findById(id).get();
+        interest.setName(updatedInterest.getName());
+        return interestRepository.save(updatedInterest);
+    }
+
+
+    @Override
+    public void delete(Long id) {
+        isPresent(id);
+        interestRepository.deleteById(id);
+    }
+
+    private void isPresent(Long id) {
+        if (!interestRepository.findById(id).isPresent()) {
+            throw new ServiceException("Interest haven't been founded by id : " + id);
+        }
     }
 
     @Override
-    @Transactional
-    public void delete(Interest interest) {
-        findById(interest.getId());
-        interestRepository.delete(interest);
-    }
-
-    @Override
-    @Transactional
     public List<Interest> findAll() {
         return interestRepository.findAll();
     }
 
     @Override
-    @Transactional
     public boolean isExist(String name) {
-        Optional<Interest> interest = interestRepository.findByName(name);
-        if (interest.isEmpty()) {
-            return false;
-        }
-        return true;
+        return interestRepository.findByName(name).isPresent();
     }
 
     @Override
-    @Transactional
     public Interest findById(Long id) {
         Optional<Interest> interest = interestRepository.findById(id);
 

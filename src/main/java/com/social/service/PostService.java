@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface PostService {
 
-    Post save(@Valid Post post, Group group);
+    Post save(@Valid Post post, Long groupId);
 
-    List<Post> findAllByGroup(Group group);
+    List<Post> findAllByGroupId(Long groupId);
 
     void sendPostMessage(Profile profile, Post post, @Valid Message message);
 

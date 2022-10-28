@@ -13,6 +13,7 @@ import java.util.Objects;
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Table(name = "chat")
 public class Chat {
@@ -25,33 +26,9 @@ public class Chat {
     @Size(min = 1, max = 50, message = "Chat name should be less than 50 and more than 1")
     private String name;
 
-    @ManyToMany(mappedBy = "chats", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "chats", fetch = FetchType.EAGER)
     private List<Profile> profiles;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chat")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "chat")
     private List<Message> messages;
-
-    public Chat(Long id, String name, List<Profile> profiles, List<Message> messages) {
-        this.id = id;
-        this.name = name;
-        this.profiles = profiles;
-        this.messages = messages;
-    }
-
-    public Chat(Long id, String name, List<Profile> profiles) {
-        this.id = id;
-        this.name = name;
-        this.profiles = profiles;
-    }
-
-    public Chat(String name, List<Profile> profiles, List<Message> messages) {
-        this.name = name;
-        this.profiles = profiles;
-        this.messages = messages;
-    }
-
-    public Chat(String name, List<Profile> profiles) {
-        this.name = name;
-        this.profiles = profiles;
-    }
 }

@@ -5,132 +5,110 @@ import com.social.repository.InterestRepository;
 import com.social.service.exception.ServiceException;
 import com.social.validator.BeanValidator;
 import com.social.validator.ValidationException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
-import static com.social.Constants.ID;
-import static com.social.Constants.INTEREST_NAME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static com.social.Constants.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class InterestServiceTest {
 
     @Autowired
     private InterestService interestService;
 
-    @MockBean
+    @Autowired
     private InterestRepository interestRepository;
 
     @Autowired
     private BeanValidator validator;
 
+    @AfterEach
+    void cleanUp() {
+        interestRepository.deleteAll();
+        interestRepository.flush();
+    }
+
     @Test
     public void saveShouldThrowExceptionWhenInterestNameEmpty() {
-        Interest interest = new Interest(ID, "");
+        Interest interest = Interest.builder().name(EMPTY_STRING).build();
 
         assertThrows(ValidationException.class, () -> validator.validate(interest));
     }
 
     @Test
     public void saveShouldSaveInterest() {
-        Interest interest = new Interest(ID, INTEREST_NAME);
-        given(interestRepository.save(isA(Interest.class))).willReturn(interest);
+        Interest expected = Interest.builder().name(INTEREST_NAME).build();
 
-        interestService.save(interest);
+        Interest actual = interestService.save(expected);
 
-        verify(interestRepository, Mockito.times(1)).save(interest);
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getId(), actual.getId());
     }
 
     @Test
     public void updateShouldThrowExceptionWhenInterestNotExist() {
-        Interest interest = new Interest(ID, INTEREST_NAME);
-        given(interestRepository.findByName(isA(String.class))).willReturn(Optional.empty());
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.empty());
+        Interest interest = Interest.builder().name(INTEREST_NAME).id(ID).build();
 
-        assertThrows(ServiceException.class, () -> interestService.update(interest));
+        assertThrows(ServiceException.class, () -> interestService.update(ID, interest));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenInterestWithThisNameExist() {
+        interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
         Interest interest = new Interest(ID, INTEREST_NAME);
-        given(interestRepository.findByName(isA(String.class))).willReturn(Optional.of(interest));
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.of(interest));
 
-        assertThrows(ServiceException.class, () -> interestService.update(interest));
+        assertThrows(ServiceException.class, () -> interestService.update(ID, interest));
     }
 
     @Test
     public void updateShouldUpdateInterest() {
-        Interest interest = new Interest(ID, INTEREST_NAME);
+        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        Interest expected = Interest.builder().name(ANOTHER_INTEREST_NAME).build();
 
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.of(interest));
-        given(interestRepository.findByName(isA(String.class))).willReturn(Optional.empty());
-        given(interestRepository.save(isA(Interest.class))).willReturn(interest);
+        Interest actual = interestService.update(interest.getId(), expected);
 
-        interestService.update(interest);
-
-        verify(interestRepository, Mockito.times(1)).save(interest);
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getId(), actual.getId());
     }
 
 
     @Test
     public void deleteShouldThrowExceptionWhenInterestNotExist() {
-        Interest interest = new Interest(ID, INTEREST_NAME);
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.empty());
-
-        assertThrows(ServiceException.class, () -> interestService.update(interest));
+        assertThrows(ServiceException.class, () -> interestService.delete(ID));
     }
 
     @Test
     public void deleteShouldDeleteInterest() {
-        Interest interest = new Interest(ID, INTEREST_NAME);
+        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
 
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.of(interest));
-        doNothing().when(interestRepository).delete(interest);
+        interestService.delete(ID);
 
-        interestService.delete(interest);
-
-        verify(interestRepository, Mockito.times(1)).delete(interest);
+        assertTrue(interestRepository.findAll().isEmpty());
     }
 
     @Test
     public void isExistShouldReturnFalseWhenInterestNotFound() {
-        given(interestRepository.findByName(isA(String.class))).willReturn(Optional.empty());
-        boolean actual = interestService.isExist(INTEREST_NAME);
-
-        assertEquals(false, actual);
+        assertFalse(interestService.isExist(INTEREST_NAME));
     }
 
     @Test
     public void isExistShouldReturnInterest() {
-        Interest interest = new Interest(ID, INTEREST_NAME);
+        interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
 
-        given(interestRepository.findByName(isA(String.class))).willReturn(Optional.of(interest));
-        boolean actual = interestService.isExist(INTEREST_NAME);
-
-        assertEquals(true, actual);
+        assertTrue(interestService.isExist(INTEREST_NAME));
     }
 
     @Test
     public void findByAllShouldReturnListInterests() {
-        List<Interest> expected = Arrays.asList(new Interest(ID, INTEREST_NAME));
+        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        List<Interest> expected = Arrays.asList(interest);
 
-        given(interestRepository.findAll()).willReturn(expected);
         List<Interest> actual = interestService.findAll();
 
         assertEquals(expected.size(), actual.size());
@@ -138,18 +116,16 @@ public class InterestServiceTest {
 
     @Test
     public void findByIdShouldThrowExceptionWhenInterestNotFound() {
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.empty());
-
         assertThrows(ServiceException.class, () -> interestService.findById(ID));
     }
 
     @Test
     public void findByIdShouldReturnInterest() {
-        Interest expected = new Interest(ID, INTEREST_NAME);
+        Interest expected = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
 
-        given(interestRepository.findById(isA(Long.class))).willReturn(Optional.of(expected));
-        Interest actual = interestService.findById(ID);
+        Interest actual = interestService.findById(expected.getId());
 
-        assertEquals(expected, actual);
+        assertEquals(expected.getName(), actual.getName());
+        assertEquals(expected.getId(), actual.getId());
     }
 }

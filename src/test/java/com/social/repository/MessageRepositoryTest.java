@@ -1,11 +1,12 @@
 package com.social.repository;
 
-import com.social.entity.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import com.social.entity.Chat;
+import com.social.entity.Message;
+import com.social.entity.Profile;
+import com.social.entity.User;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import static com.social.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class MessageRepositoryTest {
 
@@ -49,5 +49,8 @@ public class MessageRepositoryTest {
 
         Message actual = messageRepository.save(expected);
         assertEquals(expected.getText(), actual.getText());
+        assertEquals(expected.getChat(), actual.getChat());
+        assertEquals(expected.getProfile(), actual.getProfile());
+        assertEquals(expected.getDateTime(), actual.getDateTime());
     }
 }

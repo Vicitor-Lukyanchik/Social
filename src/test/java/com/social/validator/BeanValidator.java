@@ -1,5 +1,6 @@
 package com.social.validator;
 
+import com.social.service.exception.ServiceException;
 import org.springframework.stereotype.Component;
 
 import javax.validation.*;
@@ -19,6 +20,6 @@ public class BeanValidator {
         if (violations.size() == 1) {
             throw new ValidationException(violations.stream().findFirst().get().getMessage());
         }
-        throw new ServiceTestException("Not one validation problem");
+        throw new ServiceException("Not one validation problem");
     }
 }

@@ -9,7 +9,6 @@ import com.social.service.InterestService;
 import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -25,7 +24,6 @@ public class GroupServiceImpl implements GroupService {
     private final InterestService interestService;
 
     @Override
-    @Transactional
     public Group save(@Valid Group group, Profile profile, Interest interest) {
         if (!interestService.isExist(interest.getName())){
             throw new ServiceException("Interest haven't been founded by name " + interest.getName());
@@ -41,18 +39,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
-    public boolean isExist(Group group) {
-        try {
-            findById(group.getId());
-            return true;
-        } catch (ServiceException e) {
-            return false;
-        }
+    public boolean isExist(Long id) {
+        return groupRepository.findById(id).isPresent();
     }
 
     @Override
-    @Transactional
     public Group findById(Long id) {
         Optional<Group> group = groupRepository.findById(id);
 

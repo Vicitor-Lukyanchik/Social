@@ -1,22 +1,26 @@
 package com.social.repository;
 
 import com.social.entity.Interest;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import static com.social.Constants.*;
+import static com.social.Constants.INTEREST_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class InterestRepositoryTest {
 
     @Autowired
     private InterestRepository interestRepository;
+
+    @AfterEach
+    void cleanUp() {
+        interestRepository.deleteAll();
+        interestRepository.flush();
+    }
 
     @Test
     public void test() {
@@ -25,7 +29,7 @@ public class InterestRepositoryTest {
 
     @Test
     public void saveShouldSaveInterest() {
-        Interest expected = new Interest(INTEREST_NAME);
+        Interest expected = Interest.builder().name(INTEREST_NAME).build();
         Interest actual = interestRepository.save(expected);
         assertEquals(expected.getName(), actual.getName());
     }

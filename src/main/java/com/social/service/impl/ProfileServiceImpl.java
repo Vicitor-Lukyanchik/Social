@@ -21,7 +21,7 @@ import java.util.Optional;
 @Validated
 public class ProfileServiceImpl implements ProfileService {
 
-    private static final String NOT_SPECIFIED = "not specified";
+    private static final String NOT_SPECIFIED = "Undefined";
     private static final String CHAT_NAME_DELIMITER = " | ";
 
     private final ProfileRepository profileRepository;
@@ -31,8 +31,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public Profile save(@Valid Profile profile, User user) {
-        Profile result = profileRepository.save(buildProfile(profile, user));
-        return result;
+        return profileRepository.save(buildProfile(profile, user));
     }
 
     private Profile buildProfile(Profile profile, User user) {
@@ -48,27 +47,35 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Transactional
-    public Profile update(@Valid Profile profile) {
-        Profile result = profileRepository.save(profile);
-        return result;
+    public Profile update(Long id, @Valid Profile updatedProfile) {
+        isPresent(id);
+        Profile profile = profileRepository.findById(id).get();
+        if (updatedProfile.getUser().equals(profile.getUser())) {
+            throw new ServiceException("User id shouldn't be updated ");
+        }
+           profile.setFirstname(updatedProfile.getFirstname());
+            profile.setLastname(updatedProfile.getLastname());
+                 profile.setAge(updatedProfile.getAge());
+               profile.setEmail(updatedProfile.getEmail());
+                 profile.setSex(updatedProfile.getSex());
+        profile.setFamilyStatus(updatedProfile.getFamilyStatus());
+                profile.setTown(updatedProfile.getTown());
+               profile.setPhone(updatedProfile.getPhone());
+        return profileRepository.save(updatedProfile);
     }
 
     @Override
-    @Transactional
-    public void createChat(Profile profile, Profile anotherProfile, String chatName) {
-        checkProfiles(profile, anotherProfile);
+    public void createChat(Long profileId, Long anotherProfileId, String chatName) {
+        checkProfiles(profileId, anotherProfileId);
+        Profile profile = findById(profileId);
+        Profile anotherProfile = findById(anotherProfileId);
         chatName = createChatName(profile, anotherProfile, chatName);
-        chatService.save(new Chat(chatName, Arrays.asList(profile, anotherProfile)));
+        chatService.save(Chat.builder().name(chatName).profiles(Arrays.asList(profile, anotherProfile)).build());
     }
 
-    private void checkProfiles(Profile profile, Profile anotherProfile) {
-        if (!isExist(anotherProfile)) {
-            throw new ServiceException("Profile haven't been founded by id " + anotherProfile.getId());
-        }
-        if (!isExist(profile)) {
-            throw new ServiceException("Profile haven't been founded by id " + profile.getId());
-        }
+    private void checkProfiles(Long profileId, Long anotherProfileId) {
+        isPresent(profileId);
+        isPresent(anotherProfileId);
     }
 
     private String createChatName(Profile profile, Profile anotherProfile, String chatName) {
@@ -79,40 +86,35 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Transactional
-    public void joinInGroup(Profile profile, Group group) {
-        if (!isExist(profile)) {
-            throw new ServiceException("Profile haven't been founded by id " + profile.getId());
+    public void joinInGroup(Long profileId, Long groupId) {
+        isPresent(profileId);
+        if (!groupService.isExist(groupId)) {
+            throw new ServiceException("Group haven't been founded by id : " + groupId);
         }
-        if (!groupService.isExist(group)) {
-            throw new ServiceException("Group haven't been founded by id : " + group.getId());
-        }
+        Profile profile = profileRepository.findById(profileId).get();
+        Group group = groupService.findById(groupId);
         profile.getJoinGroups().add(group);
-        update(profile);
+        update(profileId, profile);
     }
 
-    private boolean isExist(Profile profile) {
-        try {
-            findById(profile.getId());
-            return true;
-        } catch (ServiceException e) {
-            return false;
+
+    private void isPresent(Long id) {
+        if (!profileRepository.findById(id).isPresent()) {
+            throw new ServiceException("Profile haven't been founded by id : " + id);
         }
     }
 
     @Override
-    @Transactional
-    public Profile findByUser(User user) {
-        Optional<Profile> profile = profileRepository.findByUser(user);
+    public Profile findByUserId(Long userId) {
+        Optional<Profile> profile = profileRepository.findProfileByUserId(userId);
 
         if (profile.isEmpty()) {
-            throw new ServiceException("Profile haven't been founded by user id: " + user.getId());
+            throw new ServiceException("Profile haven't been founded by user id: " + userId);
         }
         return profile.get();
     }
 
     @Override
-    @Transactional
     public Profile findById(Long id) {
         Optional<Profile> profile = profileRepository.findById(id);
 

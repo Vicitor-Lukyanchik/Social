@@ -9,9 +9,9 @@ public interface InterestService {
 
     Interest save(@Valid Interest interest);
 
-    Interest update(@Valid Interest interest);
+    Interest update(Long id, @Valid Interest interest);
 
-    void delete(Interest interest);
+    void delete(Long id);
 
     List<Interest> findAll();
 

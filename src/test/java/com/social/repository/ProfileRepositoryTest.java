@@ -2,18 +2,15 @@ package com.social.repository;
 
 import com.social.entity.Profile;
 import com.social.entity.User;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.social.Constants.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ProfileRepositoryTest {
 
@@ -33,7 +30,7 @@ public class ProfileRepositoryTest {
         User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
 
         Profile profile = Profile.builder()
-                .firstname("Igorigorgorigorgorigorgorigorgorigorgorigorgorigorgo")
+                .firstname(MORE_THAN_50)
                 .lastname(LASTNAME).email(EMAIL)
                 .sex(SEX).age(AGE).user(user).build();
 
@@ -51,5 +48,10 @@ public class ProfileRepositoryTest {
 
         Profile actual = profileRepository.save(expected);
         assertEquals(expected.getFirstname(), actual.getFirstname());
+        assertEquals(expected.getLastname(), actual.getLastname());
+        assertEquals(expected.getEmail(), actual.getEmail());
+        assertEquals(expected.getSex(), actual.getSex());
+        assertEquals(expected.getAge(), actual.getAge());
+        assertEquals(expected.getUser(), actual.getUser());
     }
 }

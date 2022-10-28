@@ -1,5 +1,7 @@
 package com.social.controller;
 
+import com.social.controller.converter.InterestConverter;
+import com.social.controller.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.service.InterestService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/interest")
+@RequestMapping("/interests")
 public class InterestController {
 
+    private final InterestConverter interestConverter;
     private final InterestService interestService;
 
     @GetMapping()
@@ -32,28 +35,26 @@ public class InterestController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("interest") Interest interest) {
-        interestService.save(interest);
+    public String create(@ModelAttribute("interest") InterestDto interestDto) {
+        interestService.save(interestConverter.convertToInterest(interestDto));
         return "redirect:/interest";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("interest", interestService.findById(id));
+        model.addAttribute("interest", interestConverter.convert(interestService.findById(id)));
         return "interest/edit";
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") Long id, @ModelAttribute Interest interest) {
-        interestService.findById(id);
-        interestService.update(interest);
+    public String update(@PathVariable("id") Long id, @ModelAttribute InterestDto interestDto) {
+        interestService.update(id, interestConverter.convertToInterest(interestDto));
         return "redirect:/interest";
     }
 
     @PostMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
-        Interest interest = interestService.findById(id);
-        interestService.delete(interest);
+        interestService.delete(id);
         return "redirect:/interest";
     }
 }

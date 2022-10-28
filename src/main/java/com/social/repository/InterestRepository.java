@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface InterestRepository extends JpaRepository<Interest, Long> {
 
     Optional<Interest> findByName(String name);
+
+    void deleteById(Long id);
 }
