@@ -42,7 +42,7 @@ public class AuthenticationController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
             User user = userService.findByUsername(username);
             jwtTokenProvider.createToken(username, user.getRoles());
-            return "redirect:/profiles/" + user.getId() + "/edit";
+            return "redirect:/profiles/" + user.getId();
         } catch (AuthenticationException e) {
             redirectAttributes.addFlashAttribute("isNotLogin", true);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -80,7 +80,7 @@ public class AuthenticationController {
 
             User registeredUser = userService.register(user, profile);
             jwtTokenProvider.createToken(registeredUser.getUsername(), registeredUser.getRoles());
-            return "redirect:/profiles/" + registeredUser.getId() + "/edit";
+            return "redirect:/profiles/" + registeredUser.getId();
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("isNotRegister", true);
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());

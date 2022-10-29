@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+
+    <b>Firstname: </b>
+    <b th:text="${profile.getFirstname()}"/>
+    <br/>
+
+    <b>Lastname: </b>
+    <b th:text="${profile.getLastname()}"/>
+    <br/>
+
+    <b>Email: </b>
+    <b th:text="${profile.getEmail()}"/>
+    <br/>
+
+    <b>Age: </b>
+    <b th:text="${profile.getAge()}"/>
+    <br/>
+
+    <b>Sex: </b>
+    <b th:text="${profile.getSex()}"/>
+    <br/>
+
+    <b>Phone: </b>
+    <b th:text="${profile.getPhone()}"/>
+    <br/>
+
+    <b>Town: </b>
+    <b th:text="${profile.getTown()}"/>
+    <br/>
+
+    <b>FamilyStatus: </b>
+    <b th:text="${profile.getFamilyStatus()}"/>
+    <br/>
+    <br/>
+
+    <a th:href="@{/profiles/{id}/edit(id=${profile.getId()})}">Update</a>
+</body>
+</html>

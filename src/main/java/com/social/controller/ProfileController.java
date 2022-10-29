@@ -17,6 +17,12 @@ public class ProfileController {
     private final ProfileService profileService;
     private final ProfileConverter profileConverter;
 
+    @GetMapping("/{id}")
+    public String get(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("profile", profileConverter.convert(profileService.findById(id)));
+        return "profile/index";
+    }
+
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
         model.addAttribute("profile", profileConverter.convert(profileService.findById(id)));
@@ -30,6 +36,6 @@ public class ProfileController {
         }
 
         profileService.update(id, profileConverter.convertToProfile(profileDto));
-        return "redirect:/interest";
+        return "redirect:/profiles/" + id;
     }
 }

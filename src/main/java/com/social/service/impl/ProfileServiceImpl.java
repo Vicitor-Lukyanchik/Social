@@ -50,9 +50,6 @@ public class ProfileServiceImpl implements ProfileService {
     public Profile update(Long id, @Valid Profile updatedProfile) {
         isPresent(id);
         Profile profile = profileRepository.findById(id).get();
-        if (updatedProfile.getUser().equals(profile.getUser())) {
-            throw new ServiceException("User id shouldn't be updated ");
-        }
            profile.setFirstname(updatedProfile.getFirstname());
             profile.setLastname(updatedProfile.getLastname());
                  profile.setAge(updatedProfile.getAge());
@@ -61,7 +58,7 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setFamilyStatus(updatedProfile.getFamilyStatus());
                 profile.setTown(updatedProfile.getTown());
                profile.setPhone(updatedProfile.getPhone());
-        return profileRepository.save(updatedProfile);
+        return profileRepository.save(profile);
     }
 
     @Override
@@ -94,7 +91,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = profileRepository.findById(profileId).get();
         Group group = groupService.findById(groupId);
         profile.getJoinGroups().add(group);
-        update(profileId, profile);
+        profileRepository.save(profile);
     }
 
 
