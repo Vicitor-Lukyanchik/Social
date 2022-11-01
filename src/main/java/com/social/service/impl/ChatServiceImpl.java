@@ -19,7 +19,7 @@ public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override
-    public Chat save(@Valid Chat chat) {
+    public Chat save(Chat chat) {
         Chat result = chatRepository.save(chat);
         return result;
     }
@@ -35,12 +35,9 @@ public class ChatServiceImpl implements ChatService {
     }
 
     @Override
-    public Chat findById(Long id) {
-        Optional<Chat> chat = chatRepository.findById(id);
-
-        if (chat.isEmpty()) {
-            throw new ServiceException("Chat haven't been founded by id : " + id);
-        }
-        return chat.get();
+    public Chat findById(Long id) throws ServiceException {
+        Chat chat = chatRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Chat haven't been founded by id : " + id));
+        return chat;
     }
 }

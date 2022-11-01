@@ -1,6 +1,6 @@
 package com.social.controller.exception;
 
-public class PasswordRepeatException extends RuntimeException {
+public class PasswordRepeatException extends Exception {
 
     public PasswordRepeatException(String message) {
         super(message);

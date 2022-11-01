@@ -25,9 +25,8 @@ public class RoleServiceTest {
     @Autowired
     private RoleRepository roleRepository;
 
-
     @AfterEach
-    void cleanUp() {
+    public void cleanUp(){
         roleRepository.deleteAll();
         roleRepository.flush();
     }
@@ -38,7 +37,7 @@ public class RoleServiceTest {
     }
 
     @Test
-    public void findByUsernameShouldReturnUser() {
+    public void findByUsernameShouldReturnUser() throws ServiceException {
         Role role = roleRepository.save(Role.builder().name(ROLE_NAME).status(STATUS).build());
         List<Role> expected = Arrays.asList(role);
 

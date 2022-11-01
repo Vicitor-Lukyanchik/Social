@@ -46,9 +46,10 @@ public class ProfileServiceTest {
     private BeanValidator validator;
 
     @AfterEach
-    void cleanUp() {
+    public void cleanUp() {
         profileRepository.deleteAll();
         profileRepository.flush();
+
         userRepository.deleteAll();
         userRepository.flush();
     }
@@ -214,7 +215,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void updateShouldUpdateProfile() {
+    public void updateShouldUpdateProfile() throws ServiceException {
         User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
         Profile expected = profileRepository.save(Profile.builder().firstname(FIRSTNAME)
                 .lastname(LASTNAME).email(EMAIL).age(AGE).town(TOWN)
@@ -239,7 +240,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void createChatShouldCreateChat() {
+    public void createChatShouldCreateChat() throws ServiceException {
         User user = userRepository.save(User.builder().username(USERNAME)
                 .password(PASSWORD).status(STATUS).build());
         User anotherUser = userRepository.save(User.builder().username(USERNAME)
@@ -273,7 +274,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void joinInGroupShouldJoinInGroup() {
+    public void joinInGroupShouldJoinInGroup() throws ServiceException {
         User user = userRepository.save(User.builder().username(USERNAME)
                 .password(PASSWORD).status(STATUS).build());
         Profile profile = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)
@@ -293,7 +294,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void findByUserIdShouldReturnProfile() {
+    public void findByUserIdShouldReturnProfile() throws ServiceException {
         User user = userRepository.save(User.builder().username(USERNAME)
                 .password(PASSWORD).status(STATUS).build());
         Profile expected = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)
@@ -314,7 +315,7 @@ public class ProfileServiceTest {
     }
 
     @Test
-    public void findByIdShouldReturnProfile() {
+    public void findByIdShouldReturnProfile() throws ServiceException {
         User user = userRepository.save(User.builder().username(USERNAME)
                 .password(PASSWORD).status(STATUS).build());
         Profile expected = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)

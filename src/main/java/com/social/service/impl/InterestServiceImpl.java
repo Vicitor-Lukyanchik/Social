@@ -20,7 +20,7 @@ public class InterestServiceImpl implements InterestService {
     private final InterestRepository interestRepository;
 
     @Override
-    public Interest save(@Valid Interest interest) {
+    public Interest save(Interest interest) throws ServiceException {
         if (isExist(interest.getName())) {
             throw new ServiceException("Interest have been created with name " + interest.getName());
         }
@@ -29,7 +29,7 @@ public class InterestServiceImpl implements InterestService {
     }
 
     @Override
-    public Interest update(Long id, @Valid Interest updatedInterest) {
+    public Interest update(Long id, Interest updatedInterest) throws ServiceException {
         isPresent(id);
         if (isExist(updatedInterest.getName())) {
             throw new ServiceException("Interest have been created with name " + updatedInterest.getName());
@@ -41,12 +41,12 @@ public class InterestServiceImpl implements InterestService {
 
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws ServiceException {
         isPresent(id);
         interestRepository.deleteById(id);
     }
 
-    private void isPresent(Long id) {
+    private void isPresent(Long id) throws ServiceException {
         if (!interestRepository.findById(id).isPresent()) {
             throw new ServiceException("Interest haven't been founded by id : " + id);
         }
@@ -63,12 +63,9 @@ public class InterestServiceImpl implements InterestService {
     }
 
     @Override
-    public Interest findById(Long id) {
-        Optional<Interest> interest = interestRepository.findById(id);
-
-        if (interest.isEmpty()) {
-            throw new ServiceException("Interest haven't been founded by id : " + id);
-        }
-        return interest.get();
+    public Interest findById(Long id) throws ServiceException {
+        Interest interest = interestRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Interest haven't been founded by id : " + id));
+        return interest;
     }
 }

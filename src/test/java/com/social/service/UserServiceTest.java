@@ -40,11 +40,9 @@ public class UserServiceTest {
     private BeanValidator validator;
 
     @AfterEach
-    void cleanUp() {
+    public void cleanUp() {
         userRepository.deleteAll();
         userRepository.flush();
-        roleRepository.deleteAll();
-        roleRepository.flush();
     }
 
     @Test
@@ -165,7 +163,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void registerShouldRegisterUser() {
+    public void registerShouldRegisterUser() throws ServiceException {
         roleRepository.save(Role.builder().name(ROLE_NAME).status(STATUS).build());
         User expected = User.builder().username(USERNAME).password(PASSWORD)
                 .status(STATUS).build();
@@ -190,7 +188,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findByUsernameShouldReturnUser() {
+    public void findByUsernameShouldReturnUser() throws UserNotFoundException {
         User expected = userRepository.save(User.builder().username(USERNAME)
                 .password(PASSWORD).status(STATUS).build());
 
@@ -208,7 +206,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findByIdShouldReturnUser() {
+    public void findByIdShouldReturnUser() throws UserNotFoundException {
         User expected = userRepository.save(User.builder().username(USERNAME)
                 .password(PASSWORD).status(STATUS).build());
 

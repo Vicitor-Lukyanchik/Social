@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User register(@Valid User user, @Valid Profile profile) {
+    public User register(User user, Profile profile) throws ServiceException {
         if (isUsernameUsed(user.getUsername())) {
             throw new ServiceException("Username is already exists");
         }
@@ -45,7 +44,7 @@ public class UserServiceImpl implements UserService {
         return registeredUser;
     }
 
-    private User buildUser(User user) {
+    private User buildUser(User user) throws ServiceException {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         List<Role> userRoles = roleService.findByName(ROLE_USER);
         user.setRoles(userRoles);
@@ -58,22 +57,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        Optional<User> result = userRepository.findByUsername(username);
-
-        if (result.isEmpty()) {
-            throw new UserNotFoundException("User haven't founded by username : " + username);
-        }
-        return result.get();
+    public User findByUsername(String username) throws UserNotFoundException {
+        User result = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User haven't founded by username : " + username));
+        return result;
     }
 
     @Override
-    public User findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User haven't been founded by id : " + id);
-        }
-        return user.get();
+    public User findById(Long id) throws UserNotFoundException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User haven't been founded by id : " + id));
+        return user;
     }
 }

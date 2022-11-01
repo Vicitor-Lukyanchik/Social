@@ -28,7 +28,7 @@ public class PostServiceImpl implements PostService {
     private final MessageService messageService;
 
     @Override
-    public Post save(@Valid Post post, Long groupId) {
+    public Post save(Post post, Long groupId) throws ServiceException {
         isGroupExist(groupId);
         return buildPost(post, groupService.findById(groupId));
     }
@@ -43,20 +43,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> findAllByGroupId(Long groupId) {
+    public List<Post> findAllByGroupId(Long groupId) throws ServiceException {
         isGroupExist(groupId);
         List<Post> posts = postRepository.findAllByGroup(groupService.findById(groupId));
         return posts.stream().sorted(Comparator.comparing(Post::getDateTime)).collect(Collectors.toList());
     }
 
-    private void isGroupExist(Long id) {
+    private void isGroupExist(Long id) throws ServiceException {
         if (!groupService.isExist(id)) {
             throw new ServiceException("Group haven't been founded by id " + id);
         }
     }
 
     @Override
-    public void sendPostMessage(Profile profile, Post post, @Valid Message message) {
+    public void sendPostMessage(Profile profile, Post post, Message message) throws ServiceException {
         if (!isExist(post)) {
             throw new ServiceException("Post haven't been founded by id : " + post.getId());
         }
@@ -66,7 +66,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Message> findMessagesByPost(Post post) {
+    public List<Message> findMessagesByPost(Post post) throws ServiceException {
         if (!isExist(post)) {
             throw new ServiceException("Post haven't been founded by id : " + post.getId());
         }
@@ -74,7 +74,7 @@ public class PostServiceImpl implements PostService {
         return messageService.findAllByChat(post.getChat());
     }
 
-    private void isInGroup(Profile profile, Group group) {
+    private void isInGroup(Profile profile, Group group) throws ServiceException {
         Optional<Profile> result = group.getJoinProfiles().stream()
                 .filter(p -> profile.getId().equals(p.getId())).findFirst();
 
@@ -95,12 +95,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post findById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
-
-        if (post.isEmpty()) {
-            throw new ServiceException("Post haven't been founded by id : " + id);
-        }
-        return post.get();
+    public Post findById(Long id) throws ServiceException {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Post haven't been founded by id : " + id));
+        return post;
     }
 }

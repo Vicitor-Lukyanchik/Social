@@ -25,13 +25,13 @@ public class MessageServiceImpl implements MessageService {
     private final ChatService chatService;
 
     @Override
-    public Message save(@Valid Message message) {
+    public Message save(Message message) {
         Message result = messageRepository.save(message);
         return result;
     }
 
     @Override
-    public void sendMessage(Profile profile, @Valid Message message, Chat chat) {
+    public void sendMessage(Profile profile, Message message, Chat chat) throws ServiceException {
         if (!chatService.isExist(chat)) {
             throw new ServiceException("Chat haven't been founded by id " + chat.getId());
         }
@@ -41,7 +41,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<Message> findAllByChat(@Valid Chat chat) {
+    public List<Message> findAllByChat(Chat chat) throws ServiceException {
         if (!chatService.isExist(chat)) {
             throw new ServiceException("Chat haven't been founded by id " + chat.getId());
         }

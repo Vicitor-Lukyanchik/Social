@@ -2,6 +2,8 @@ package com.social.repository;
 
 import com.social.entity.*;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.social.Constants.*;
+import static com.social.util.MockUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,23 +35,28 @@ public class GroupRepositoryTest {
     @Autowired
     private InterestRepository interestRepository;
 
-    @Test
-    public void test() {
-        assertThat(groupRepository).isNotNull();
+    @AfterEach
+    public void cleanUp(){
+        groupRepository.deleteAll();
+        groupRepository.flush();
+
+        interestRepository.deleteAll();
+        interestRepository.flush();
+
+        profileRepository.deleteAll();
+        profileRepository.flush();
+
+        userRepository.deleteAll();
+        userRepository.flush();
     }
 
     @Test
     public void saveShouldSaveGroup() {
-        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD)
-                .roles(Collections.EMPTY_LIST).status(STATUS).build());
-        Profile profile = profileRepository.save(Profile.builder()
-                .firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL)
-                .sex(SEX).age(AGE).user(user).joinGroups(Collections.EMPTY_LIST)
-                .createdGroups(Collections.EMPTY_LIST).chats(Collections.EMPTY_LIST).build());
-        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        User user = userRepository.save(createUser());
+        Profile profile = profileRepository.save(createProfile(user));
+        Interest interest = interestRepository.save(createInterest());
 
-        Group expected = groupRepository.save(Group.builder().name(GROUP_NAME).profile(profile).interest(interest).build());
+        Group expected = groupRepository.save(createGroup(profile, interest));
         Group actual = groupRepository.save(expected);
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getInterest(), actual.getInterest());

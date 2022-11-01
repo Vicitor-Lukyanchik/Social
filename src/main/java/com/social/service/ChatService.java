@@ -1,15 +1,14 @@
 package com.social.service;
 
 import com.social.entity.Chat;
-
-import javax.validation.Valid;
+import com.social.service.exception.ServiceException;
 
 public interface ChatService {
 
-    Chat save(@Valid Chat chat);
+    Chat save(Chat chat);
 
     boolean isExist(Chat chat);
 
-    Chat findById(Long id);
+    Chat findById(Long id) throws ServiceException;
 
 }

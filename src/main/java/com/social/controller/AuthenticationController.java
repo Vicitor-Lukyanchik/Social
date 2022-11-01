@@ -7,12 +7,14 @@ import com.social.entity.Profile;
 import com.social.entity.User;
 import com.social.security.jwt.JwtTokenProvider;
 import com.social.service.UserService;
+import com.social.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "/auth")
+@Validated
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
@@ -31,12 +34,12 @@ public class AuthenticationController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public String loginTemplate(@ModelAttribute("login") AuthenticationRequestDto requestDto) {
+    public String loginTemplate(@Valid @ModelAttribute("login") AuthenticationRequestDto requestDto) {
         return "authentication/login";
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute AuthenticationRequestDto requestDto, RedirectAttributes redirectAttributes) {
+    public String login(@Valid @ModelAttribute AuthenticationRequestDto requestDto, RedirectAttributes redirectAttributes) throws UserNotFoundException {
         try {
             String username = requestDto.getUsername();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
@@ -51,7 +54,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/register")
-    public String registerTemplate(@ModelAttribute("register") RegistrationRequestDto requestDto) {
+    public String registerTemplate(@Valid @ModelAttribute("register") RegistrationRequestDto requestDto) {
         return "authentication/register";
     }
 

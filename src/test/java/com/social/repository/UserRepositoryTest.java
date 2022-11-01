@@ -1,11 +1,13 @@
 package com.social.repository;
 
 import com.social.entity.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static com.social.Constants.*;
+import static com.social.util.MockUtils.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -30,7 +32,7 @@ public class UserRepositoryTest {
 
     @Test
     public void saveShouldSaveUser() {
-        User expected = User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build();
+        User expected = createUser();
         User actual = userRepository.save(expected);
         assertEquals(expected.getUsername(), actual.getUsername());
         assertEquals(expected.getPassword(), actual.getPassword());

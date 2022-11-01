@@ -29,7 +29,7 @@ public class InterestServiceTest {
     private BeanValidator validator;
 
     @AfterEach
-    void cleanUp() {
+    public void cleanUp(){
         interestRepository.deleteAll();
         interestRepository.flush();
     }
@@ -42,7 +42,7 @@ public class InterestServiceTest {
     }
 
     @Test
-    public void saveShouldSaveInterest() {
+    public void saveShouldSaveInterest() throws ServiceException {
         Interest expected = Interest.builder().name(INTEREST_NAME).build();
 
         Interest actual = interestService.save(expected);
@@ -67,7 +67,7 @@ public class InterestServiceTest {
     }
 
     @Test
-    public void updateShouldUpdateInterest() {
+    public void updateShouldUpdateInterest() throws ServiceException {
         Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
         Interest expected = Interest.builder().name(ANOTHER_INTEREST_NAME).build();
 
@@ -84,10 +84,10 @@ public class InterestServiceTest {
     }
 
     @Test
-    public void deleteShouldDeleteInterest() {
+    public void deleteShouldDeleteInterest() throws ServiceException {
         Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
 
-        interestService.delete(ID);
+        interestService.delete(interest.getId());
 
         assertTrue(interestRepository.findAll().isEmpty());
     }
@@ -120,7 +120,7 @@ public class InterestServiceTest {
     }
 
     @Test
-    public void findByIdShouldReturnInterest() {
+    public void findByIdShouldReturnInterest() throws ServiceException {
         Interest expected = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
 
         Interest actual = interestService.findById(expected.getId());

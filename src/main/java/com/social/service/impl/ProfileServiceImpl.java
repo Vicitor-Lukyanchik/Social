@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -30,7 +29,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional
-    public Profile save(@Valid Profile profile, User user) {
+    public Profile save(Profile profile, User user) {
         return profileRepository.save(buildProfile(profile, user));
     }
 
@@ -47,7 +46,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile update(Long id, @Valid Profile updatedProfile) {
+    public Profile update(Long id, Profile updatedProfile) throws ServiceException {
         isPresent(id);
         Profile profile = profileRepository.findById(id).get();
            profile.setFirstname(updatedProfile.getFirstname());
@@ -62,7 +61,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void createChat(Long profileId, Long anotherProfileId, String chatName) {
+    public void createChat(Long profileId, Long anotherProfileId, String chatName) throws ServiceException {
         checkProfiles(profileId, anotherProfileId);
         Profile profile = findById(profileId);
         Profile anotherProfile = findById(anotherProfileId);
@@ -70,7 +69,7 @@ public class ProfileServiceImpl implements ProfileService {
         chatService.save(Chat.builder().name(chatName).profiles(Arrays.asList(profile, anotherProfile)).build());
     }
 
-    private void checkProfiles(Long profileId, Long anotherProfileId) {
+    private void checkProfiles(Long profileId, Long anotherProfileId) throws ServiceException {
         isPresent(profileId);
         isPresent(anotherProfileId);
     }
@@ -83,7 +82,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void joinInGroup(Long profileId, Long groupId) {
+    public void joinInGroup(Long profileId, Long groupId) throws ServiceException {
         isPresent(profileId);
         if (!groupService.isExist(groupId)) {
             throw new ServiceException("Group haven't been founded by id : " + groupId);
@@ -95,29 +94,23 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
 
-    private void isPresent(Long id) {
+    private void isPresent(Long id) throws ServiceException {
         if (!profileRepository.findById(id).isPresent()) {
             throw new ServiceException("Profile haven't been founded by id : " + id);
         }
     }
 
     @Override
-    public Profile findByUserId(Long userId) {
-        Optional<Profile> profile = profileRepository.findProfileByUserId(userId);
-
-        if (profile.isEmpty()) {
-            throw new ServiceException("Profile haven't been founded by user id: " + userId);
-        }
-        return profile.get();
+    public Profile findByUserId(Long userId) throws ServiceException {
+        Profile profile = profileRepository.findProfileByUserId(userId)
+                .orElseThrow(() -> new ServiceException("Profile haven't been founded by user id: " + userId));
+        return profile;
     }
 
     @Override
-    public Profile findById(Long id) {
-        Optional<Profile> profile = profileRepository.findById(id);
-
-        if (profile.isEmpty()) {
-            throw new ServiceException("Profile haven't been founded by id : " + id);
-        }
-        return profile.get();
+    public Profile findById(Long id) throws ServiceException {
+        Profile profile = profileRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Profile haven't been founded by id : " + id));
+        return profile;
     }
 }

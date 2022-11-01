@@ -20,7 +20,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public List<Role> findByName(String name) {
+    public List<Role> findByName(String name) throws ServiceException {
         List<Role> result = roleRepository.findByName(name);
 
         if (result.isEmpty()) {

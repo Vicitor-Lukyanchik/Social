@@ -4,6 +4,7 @@ import com.social.entity.Chat;
 import com.social.entity.Message;
 import com.social.entity.Profile;
 import com.social.entity.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static com.social.Constants.*;
+import static com.social.util.MockUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -30,22 +32,28 @@ public class MessageRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    public void test() {
-        assertThat(messageRepository).isNotNull();
+    @AfterEach
+    public void cleanUp(){
+        messageRepository.deleteAll();
+        messageRepository.flush();
+
+        chatRepository.deleteAll();
+        chatRepository.flush();
+
+        profileRepository.deleteAll();
+        profileRepository.flush();
+
+        userRepository.deleteAll();
+        userRepository.flush();
     }
 
     @Test
     public void saveShouldSaveMessage() {
-        Chat chat = chatRepository.save(Chat.builder().name(CHAT_NAME).messages(new ArrayList<>()).build());
-        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
-        Profile profile = profileRepository.save(Profile.builder()
-                .firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL)
-                .sex(SEX).age(AGE).user(user).build());
+        Chat chat = chatRepository.save(createChat());
+        User user = userRepository.save(createUser());
+        Profile profile = profileRepository.save(createProfile(user));
 
-        Message expected = Message.builder().chat(chat).profile(profile)
-                .text(MESSAGE_TEXT).dateTime(LocalDateTime.now()).build();
+        Message expected = createMessage(profile, chat);
 
         Message actual = messageRepository.save(expected);
         assertEquals(expected.getText(), actual.getText());

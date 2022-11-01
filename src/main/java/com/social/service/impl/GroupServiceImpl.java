@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -24,7 +23,7 @@ public class GroupServiceImpl implements GroupService {
     private final InterestService interestService;
 
     @Override
-    public Group save(@Valid Group group, Profile profile, Interest interest) {
+    public Group save(Group group, Profile profile, Interest interest) throws ServiceException {
         if (!interestService.isExist(interest.getName())){
             throw new ServiceException("Interest haven't been founded by name " + interest.getName());
         }
@@ -44,12 +43,9 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group findById(Long id) {
-        Optional<Group> group = groupRepository.findById(id);
-
-        if (group.isEmpty()) {
-            throw new ServiceException("Group haven't been founded by id : " + id);
-        }
-        return group.get();
+    public Group findById(Long id) throws ServiceException {
+        Group group = groupRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Group haven't been founded by id : " + id));
+        return group;
     }
 }

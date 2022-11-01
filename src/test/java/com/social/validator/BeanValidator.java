@@ -15,7 +15,7 @@ public class BeanValidator {
         validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
-    public void validate(Object bean) throws AssertionError {
+    public void validate(Object bean) throws AssertionError, ServiceException {
         Set<ConstraintViolation<Object>> violations = validator.validate(bean);
         if (violations.size() == 1) {
             throw new ValidationException(violations.stream().findFirst().get().getMessage());
