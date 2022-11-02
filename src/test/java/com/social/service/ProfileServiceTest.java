@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static com.social.Constants.*;
+import static com.social.util.MockUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
@@ -56,99 +57,96 @@ public class ProfileServiceTest {
 
     @Test
     public void saveShouldThrowExceptionWhenFirstnameMoreThan50() {
-        Profile profile = Profile.builder().firstname(MORE_THAN_50)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setFirstname(MORE_THAN_50);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstnameLessThan2() {
-        Profile profile = Profile.builder().firstname(LESS_THAN_2)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setFirstname(LESS_THAN_2);
 
         assertThrows(ServiceException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstnameIsEmpty() {
-        Profile profile = Profile.builder().firstname(EMPTY_STRING)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setFirstname(EMPTY_STRING);
 
         assertThrows(ServiceException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstLetterInFirstnameLowercase() {
-        Profile profile = Profile.builder().firstname(LOWERCASE_STRING)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setFirstname(LOWERCASE_STRING);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenLastnameMoreThan50() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(MORE_THAN_50).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setLastname(MORE_THAN_50);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenLastnameLessThan2() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LESS_THAN_2).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setLastname(LESS_THAN_2);
 
         assertThrows(ServiceException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenLastnameIsEmpty() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(EMPTY_STRING).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setLastname(EMPTY_STRING);
 
         assertThrows(ServiceException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstLetterInLastnameLowercase() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LOWERCASE_STRING).email(EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setLastname(LOWERCASE_STRING);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenAgeLessThan6() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(5).build();
+        Profile profile = createProfile();
+        profile.setAge(AGE_LESS_THAN_6);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenAgeMoreThan120() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(121).build();
+        Profile profile = createProfile();
+        profile.setAge(AGE_MORE_THAN_120);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenMailNotValid() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(NOT_VALID_EMAIL).age(AGE).build();
+        Profile profile = createProfile();
+        profile.setEmail(NOT_VALID_EMAIL);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void saveShouldSaveProfile() {
-        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
-        Profile expected = Profile.builder()
-                .firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL)
-                .sex(SEX).age(AGE).build();
+        User user = userRepository.save(createUser());
+        Profile expected = createProfile();
 
         Profile actual = profileService.save(expected, user);
 
@@ -162,64 +160,56 @@ public class ProfileServiceTest {
 
     @Test
     public void updateShouldThrowExceptionWhenTownFirstLetterLowercase() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(LOWERCASE_STRING)
-                .phone(PHONE).familyStatus(FAMILY_STATUS).build();
+        Profile profile = createProfile();
+        profile.setTown(LOWERCASE_STRING);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenTownLessThan2() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(LESS_THAN_2)
-                .phone(PHONE).familyStatus(FAMILY_STATUS).build();
+        Profile profile = createProfile();
+        profile.setTown(LESS_THAN_2);
 
         assertThrows(ServiceException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenTownMoreThan50() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(MORE_THAN_50)
-                .phone(PHONE).familyStatus(FAMILY_STATUS).build();
+        Profile profile = createProfile();
+        profile.setTown(MORE_THAN_50);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenPhoneLessThan7() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(TOWN)
-                .phone(LESS_THAN_7).familyStatus(FAMILY_STATUS).build();
+        Profile profile = createProfile();
+        profile.setPhone(LESS_THAN_7);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenPhoneMoreThan15() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(TOWN)
-                .phone(MORE_THAN_15).familyStatus(FAMILY_STATUS).build();
+        Profile profile = createProfile();
+        profile.setPhone(MORE_THAN_15);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenPhoneMoreThan50() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(TOWN)
-                .phone(PHONE).familyStatus(MORE_THAN_50).build();
+        Profile profile = createProfile();
+        profile.setPhone(MORE_THAN_50);
 
         assertThrows(ValidationException.class, () -> validator.validate(profile));
     }
 
     @Test
     public void updateShouldUpdateProfile() throws ServiceException {
-        User user = userRepository.save(User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build());
-        Profile expected = profileRepository.save(Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).town(TOWN)
-                .phone(PHONE).familyStatus(FAMILY_STATUS).user(user).build());
+        User user = userRepository.save(createUser());
+        Profile expected = profileRepository.save(createProfile(user));
 
         Profile actual = profileService.update(expected.getId(), expected);
 
@@ -241,14 +231,10 @@ public class ProfileServiceTest {
 
     @Test
     public void createChatShouldCreateChat() throws ServiceException {
-        User user = userRepository.save(User.builder().username(USERNAME)
-                .password(PASSWORD).status(STATUS).build());
-        User anotherUser = userRepository.save(User.builder().username(USERNAME)
-                .password(PASSWORD).status(STATUS).build());
-        Profile profile = profileRepository.save(Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).user(user).build());
-        Profile anotherProfile = profileRepository.save(Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).user(anotherUser).build());
+        User user = userRepository.save(createUser());
+        User anotherUser = userRepository.save(createUser());
+        Profile profile = profileRepository.save(createProfile(user));
+        Profile anotherProfile = profileRepository.save(createProfile(anotherUser));
 
         when(chatService.save(isA(Chat.class))).thenReturn(null);
 
@@ -262,11 +248,9 @@ public class ProfileServiceTest {
 
     @Test
     public void joinInGroupShouldThrowExceptionWhenGroupNotExist() {
-        User user = userRepository.save(User.builder().username(USERNAME)
-                .password(PASSWORD).status(STATUS).build());
-        Profile profile = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).user(user).build());
-        Group group = Group.builder().name(GROUP_NAME).profile(profile).build();
+        User user = userRepository.save(createUser());
+        Profile profile = profileRepository.save(createProfile(user));
+        Group group = createGroup(profile);
 
         given(groupService.isExist(isA(Long.class))).willReturn(false);
 
@@ -275,11 +259,10 @@ public class ProfileServiceTest {
 
     @Test
     public void joinInGroupShouldJoinInGroup() throws ServiceException {
-        User user = userRepository.save(User.builder().username(USERNAME)
-                .password(PASSWORD).status(STATUS).build());
-        Profile profile = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).user(user).build());
-        Group group = Group.builder().id(ID).name(GROUP_NAME).profile(profile).build();
+        User user = userRepository.save(createUser());
+        Profile profile = profileRepository.save(createProfile(user));
+        Group group = createGroup(profile);
+        group.setId(ID);
 
         given(groupService.isExist(isA(Long.class))).willReturn(true);
 
@@ -295,10 +278,8 @@ public class ProfileServiceTest {
 
     @Test
     public void findByUserIdShouldReturnProfile() throws ServiceException {
-        User user = userRepository.save(User.builder().username(USERNAME)
-                .password(PASSWORD).status(STATUS).build());
-        Profile expected = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).user(user).build());
+        User user = userRepository.save(createUser());
+        Profile expected = profileRepository.save(createProfile(user));
 
         Profile actual = profileService.findByUserId(user.getId());
 
@@ -316,10 +297,8 @@ public class ProfileServiceTest {
 
     @Test
     public void findByIdShouldReturnProfile() throws ServiceException {
-        User user = userRepository.save(User.builder().username(USERNAME)
-                .password(PASSWORD).status(STATUS).build());
-        Profile expected = profileRepository.save(Profile.builder().id(ID).firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(AGE).sex(SEX).user(user).town(TOWN).build());
+        User user = userRepository.save(createUser());
+        Profile expected = profileRepository.save(createProfile(user));
 
         Profile actual = profileService.findById(expected.getId());
 

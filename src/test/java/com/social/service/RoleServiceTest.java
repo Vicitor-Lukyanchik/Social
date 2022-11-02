@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.social.Constants.ROLE_NAME;
-import static com.social.Constants.STATUS;
+import static com.social.util.MockUtils.createRole;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -38,7 +38,7 @@ public class RoleServiceTest {
 
     @Test
     public void findByUsernameShouldReturnUser() throws ServiceException {
-        Role role = roleRepository.save(Role.builder().name(ROLE_NAME).status(STATUS).build());
+        Role role = roleRepository.save(createRole());
         List<Role> expected = Arrays.asList(role);
 
         List<Role> actual = roleService.findByName(ROLE_NAME);

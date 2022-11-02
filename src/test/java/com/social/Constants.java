@@ -22,15 +22,17 @@ public class Constants {
     public static final String FAMILY_STATUS = "married";
     public static final String EMAIL = "igorpirov@mail.ru";
     public static final Sex SEX = Sex.MALE;
-    public static final Integer AGE = 25;
+    public static final Integer AGE = 20;
+    public static final Integer AGE_LESS_THAN_6 = 5;
+    public static final Integer AGE_MORE_THAN_120 = 121;
     public static final Long ID = 1L;
     public static final Long ANOTHER_ID = 2L;
 
     public static final String MORE_THAN_50 = "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    public static final String MORE_THAN_15 = "Aaaaaaaaaaaaaaaa";
+    public static final String MORE_THAN_15 = "123456789123456789";
     public static final String LESS_THAN_2 = "A";
     public static final String LESS_THAN_4 = "Abc";
-    public static final String LESS_THAN_7 = "Aaaaaa";
+    public static final String LESS_THAN_7 = "666666";
     public static final String EMPTY_STRING = "";
     public static final String LOWERCASE_STRING = "lovchin";
     public static final String NOT_VALID_EMAIL = "gimail.ru";

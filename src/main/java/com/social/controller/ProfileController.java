@@ -16,7 +16,6 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping(value = "/profiles")
-@Validated
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -37,7 +36,7 @@ public class ProfileController {
     @PostMapping("/{id}")
     public String update(@PathVariable("id") Long id, @Valid @ModelAttribute ProfileDto profileDto, BindingResult bindingResult) throws ServiceException {
         if (bindingResult.hasErrors()) {
-            return "authentication/register";
+            return "redirect:/profiles/" + id + "/edit";
         }
 
         profileService.update(id, profileConverter.convertToProfile(profileDto));

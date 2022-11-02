@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.social.Constants.*;
+import static com.social.util.MockUtils.createInterest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,14 +37,15 @@ public class InterestServiceTest {
 
     @Test
     public void saveShouldThrowExceptionWhenInterestNameEmpty() {
-        Interest interest = Interest.builder().name(EMPTY_STRING).build();
+        Interest interest = createInterest();
+        interest.setName(EMPTY_STRING);
 
         assertThrows(ValidationException.class, () -> validator.validate(interest));
     }
 
     @Test
     public void saveShouldSaveInterest() throws ServiceException {
-        Interest expected = Interest.builder().name(INTEREST_NAME).build();
+        Interest expected = createInterest();
 
         Interest actual = interestService.save(expected);
 
@@ -53,23 +55,26 @@ public class InterestServiceTest {
 
     @Test
     public void updateShouldThrowExceptionWhenInterestNotExist() {
-        Interest interest = Interest.builder().name(INTEREST_NAME).id(ID).build();
+        Interest interest = createInterest();
+        interest.setId(ID);
 
         assertThrows(ServiceException.class, () -> interestService.update(ID, interest));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenInterestWithThisNameExist() {
-        interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
-        Interest interest = new Interest(ID, INTEREST_NAME);
+        interestRepository.save(createInterest());
+        Interest interest = createInterest();
+        interest.setId(ID);
 
         assertThrows(ServiceException.class, () -> interestService.update(ID, interest));
     }
 
     @Test
     public void updateShouldUpdateInterest() throws ServiceException {
-        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
-        Interest expected = Interest.builder().name(ANOTHER_INTEREST_NAME).build();
+        Interest interest = interestRepository.save(createInterest());
+        Interest expected = createInterest();
+        expected.setName(ANOTHER_INTEREST_NAME);
 
         Interest actual = interestService.update(interest.getId(), expected);
 
@@ -85,7 +90,7 @@ public class InterestServiceTest {
 
     @Test
     public void deleteShouldDeleteInterest() throws ServiceException {
-        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        Interest interest = interestRepository.save(createInterest());
 
         interestService.delete(interest.getId());
 
@@ -99,14 +104,14 @@ public class InterestServiceTest {
 
     @Test
     public void isExistShouldReturnInterest() {
-        interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        interestRepository.save(createInterest());
 
         assertTrue(interestService.isExist(INTEREST_NAME));
     }
 
     @Test
     public void findByAllShouldReturnListInterests() {
-        Interest interest = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        Interest interest = interestRepository.save(createInterest());
         List<Interest> expected = Arrays.asList(interest);
 
         List<Interest> actual = interestService.findAll();
@@ -121,7 +126,7 @@ public class InterestServiceTest {
 
     @Test
     public void findByIdShouldReturnInterest() throws ServiceException {
-        Interest expected = interestRepository.save(Interest.builder().name(INTEREST_NAME).build());
+        Interest expected = interestRepository.save(createInterest());
 
         Interest actual = interestService.findById(expected.getId());
 

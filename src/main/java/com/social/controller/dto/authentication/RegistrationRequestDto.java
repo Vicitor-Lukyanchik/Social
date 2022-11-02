@@ -30,7 +30,6 @@ public class RegistrationRequestDto {
     @Pattern(regexp = "^[A-Z][a-z0-9_-]{3,19}$", message = "First letter in lastname should be uppercase")
     private String lastname;
 
-    @NotBlank(message = "Email can't be empty")
     @Email(message = "Email should be valid")
     private String email;
 
