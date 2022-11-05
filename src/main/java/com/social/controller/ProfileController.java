@@ -33,9 +33,9 @@ public class ProfileController {
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") Long id, @Valid @ModelAttribute ProfileDto profileDto, BindingResult bindingResult) throws ServiceException {
+    public String update(@PathVariable("id") Long id, @Valid @ModelAttribute(name = "profile") ProfileDto profileDto, BindingResult bindingResult) throws ServiceException {
         if (bindingResult.hasErrors()) {
-            return "redirect:/profiles/" + id + "/edit";
+            return "profile/edit";
         }
 
         profileService.update(id, profileConverter.convertToProfile(profileDto));

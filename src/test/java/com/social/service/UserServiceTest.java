@@ -172,7 +172,7 @@ public class UserServiceTest {
         Profile profile = createProfile();
 
         given(profileService.save(isA(Profile.class), isA(User.class))).willReturn(profile);
-        User actual = userService.register(expected, profile);
+        User actual = userService.registerUser(expected, profile);
 
         assertEquals(expected.getPassword(), actual.getPassword());
         assertEquals(expected.getUsername(), actual.getUsername());
