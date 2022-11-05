@@ -1,4 +1,4 @@
-package com.social.controller.dto;
+package com.social.dto;
 
 import lombok.Builder;
 import lombok.Data;

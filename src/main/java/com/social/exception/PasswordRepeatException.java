@@ -1,4 +1,4 @@
-package com.social.controller.exception;
+package com.social.exception;
 
 public class PasswordRepeatException extends Exception {
 

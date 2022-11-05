@@ -1,9 +1,11 @@
 package com.social.controller;
 
-import com.social.controller.converter.ProfileConverter;
-import com.social.controller.dto.authentication.AuthenticationRequestDto;
-import com.social.controller.dto.authentication.RegistrationRequestDto;
-import com.social.controller.exception.PasswordRepeatException;
+import com.social.converter.ProfileConverter;
+import com.social.converter.RegistrationRequestToProfileConverter;
+import com.social.converter.RegistrationRequestToUserConverter;
+import com.social.dto.authentication.AuthenticationRequestDto;
+import com.social.dto.authentication.RegistrationRequestDto;
+import com.social.exception.PasswordRepeatException;
 import com.social.entity.Profile;
 import com.social.entity.User;
 import com.social.security.jwt.JwtTokenProvider;
@@ -33,7 +35,8 @@ public class AuthenticationController {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
-    private final ProfileConverter profileConverter;
+    private final RegistrationRequestToUserConverter requestToUserConverter;
+    private final RegistrationRequestToProfileConverter requestToProfileConverter;
 
     @GetMapping("/login")
     public String loginTemplate(@Valid @ModelAttribute("login") AuthenticationRequestDto requestDto) {
@@ -72,7 +75,8 @@ public class AuthenticationController {
                 throw new PasswordRepeatException("Password should repeat correct");
             }
 
-            User registeredUser = userService.register(getUser(requestDto), getProfile(requestDto));
+            User registeredUser = userService.register(requestToUserConverter.convert(requestDto),
+                    requestToProfileConverter.convert(requestDto));
             jwtTokenProvider.createToken(registeredUser.getUsername(), registeredUser.getRoles());
             return "redirect:/profiles/" + registeredUser.getId();
         } catch (Exception e) {
@@ -81,22 +85,4 @@ public class AuthenticationController {
             return "redirect:/auth/register";
         }
     }
-
-    private Profile getProfile(RegistrationRequestDto requestDto) {
-        Profile profile = Profile.builder()
-                .firstname(requestDto.getFirstname())
-                .lastname(requestDto.getLastname())
-                .email(requestDto.getEmail()).age(requestDto.getAge())
-                .build();
-        return profile;
-    }
-
-    private User getUser(RegistrationRequestDto requestDto) {
-        User user = User.builder()
-                .username(requestDto.getUsername())
-                .password(requestDto.getPassword())
-                .build();
-        return user;
-    }
-
 }

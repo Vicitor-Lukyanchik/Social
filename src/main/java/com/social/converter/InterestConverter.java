@@ -1,6 +1,6 @@
-package com.social.controller.converter;
+package com.social.converter;
 
-import com.social.controller.dto.InterestDto;
+import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

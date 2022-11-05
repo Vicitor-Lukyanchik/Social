@@ -1,4 +1,4 @@
-package com.social.controller.dto;
+package com.social.dto;
 
 import com.social.entity.Sex;
 import lombok.Builder;

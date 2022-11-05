@@ -1,14 +1,13 @@
 package com.social.controller;
 
-import com.social.controller.converter.ProfileConverter;
-import com.social.controller.dto.ProfileDto;
+import com.social.converter.ProfileConverter;
+import com.social.dto.ProfileDto;
 import com.social.service.ProfileService;
 import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

@@ -1,6 +1,6 @@
-package com.social.controller.converter;
+package com.social.converter;
 
-import com.social.controller.dto.ProfileDto;
+import com.social.dto.ProfileDto;
 import com.social.entity.Profile;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.social.security.config;
+package com.social.config;
 
 import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
 

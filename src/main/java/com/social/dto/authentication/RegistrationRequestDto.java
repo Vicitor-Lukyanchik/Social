@@ -1,4 +1,4 @@
-package com.social.controller.dto.authentication;
+package com.social.dto.authentication;
 
 import lombok.Data;
 

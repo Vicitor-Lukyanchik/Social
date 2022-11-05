@@ -1,7 +1,7 @@
 package com.social.controller;
 
-import com.social.controller.converter.InterestConverter;
-import com.social.controller.dto.InterestDto;
+import com.social.converter.InterestConverter;
+import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.service.InterestService;
 import com.social.service.exception.ServiceException;

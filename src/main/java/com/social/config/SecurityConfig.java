@@ -1,4 +1,4 @@
-package com.social.security.config;
+package com.social.config;
 
 import com.social.security.jwt.JwtConfigurer;
 import com.social.security.jwt.JwtTokenProvider;
