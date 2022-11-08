@@ -1,5 +1,6 @@
 package com.social.util;
 
+import com.social.dto.InterestDto;
 import com.social.entity.*;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,8 @@ public class MockUtils {
         return Chat.builder().name(CHAT_NAME).build();
     }
 
-    public static Interest createInterest() {
-        return Interest.builder().name(INTEREST_NAME).build();
+    public static InterestDto createInterest() {
+        return InterestDto.builder().name(INTEREST_NAME).build();
     }
 
     public static User createUser() {

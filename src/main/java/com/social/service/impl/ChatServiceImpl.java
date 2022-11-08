@@ -3,13 +3,10 @@ package com.social.service.impl;
 import com.social.entity.Chat;
 import com.social.repository.ChatRepository;
 import com.social.service.ChatService;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-
-import javax.validation.Valid;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

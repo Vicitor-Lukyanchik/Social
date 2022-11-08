@@ -1,11 +1,13 @@
 package com.social.service;
 
+import com.social.dto.MessageDto;
+import com.social.dto.UserDto;
 import com.social.dto.authentication.AuthenticationRequestDto;
 import com.social.dto.authentication.RegistrationRequestDto;
 import com.social.entity.Profile;
 import com.social.entity.User;
-import com.social.service.exception.ServiceException;
-import com.social.service.exception.UserNotFoundException;
+import com.social.exception.ServiceException;
+import com.social.exception.UserNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -13,13 +15,13 @@ import javax.validation.Valid;
 
 public interface UserService {
 
-    String login(AuthenticationRequestDto requestDto, RedirectAttributes redirectAttributes);
+    UserDto login(AuthenticationRequestDto requestDto);
 
-    String register(RegistrationRequestDto requestDto, BindingResult bindingResult, RedirectAttributes redirectAttributes);
+    UserDto register(RegistrationRequestDto requestDto);
 
-    User registerUser(User user, Profile profile) throws ServiceException;
+    UserDto registerUser(@Valid User user, @Valid Profile profile);
 
-    User findByUsername(String username) throws UserNotFoundException;
+    UserDto findByUsername(String username);
 
-    User findById(Long id) throws UserNotFoundException;
+    UserDto findById(Long id);
 }

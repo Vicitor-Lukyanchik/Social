@@ -1,4 +1,4 @@
-package com.social.security.jwt;
+package com.social.jwt;
 
 import com.social.entity.Role;
 import io.jsonwebtoken.*;

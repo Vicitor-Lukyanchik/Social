@@ -1,16 +1,20 @@
 package com.social.service.impl;
 
+import com.social.converter.DtoToProfileConverter;
+import com.social.converter.ProfileToDtoConverter;
+import com.social.dto.ProfileDto;
 import com.social.entity.*;
 import com.social.repository.ProfileRepository;
 import com.social.service.ChatService;
 import com.social.service.GroupService;
 import com.social.service.ProfileService;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -26,6 +30,8 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final ChatService chatService;
     private final GroupService groupService;
+    private final ProfileToDtoConverter profileToDtoConverter;
+    private final DtoToProfileConverter dtoToProfileConverter;
 
     @Override
     @Transactional
@@ -46,36 +52,40 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile update(Long id, Profile updatedProfile) throws ServiceException {
-        isPresent(id);
+    public ProfileDto update(Long id, @Valid ProfileDto updatedProfile) {
+        if (!isPresent(id)) {
+            return ProfileDto.builder().message("Profile haven't been founded by id : " + id).build();
+        }
         Profile profile = profileRepository.findById(id).get();
-           profile.setFirstname(updatedProfile.getFirstname());
-            profile.setLastname(updatedProfile.getLastname());
-                 profile.setAge(updatedProfile.getAge());
-               profile.setEmail(updatedProfile.getEmail());
-                 profile.setSex(updatedProfile.getSex());
+        profile.setFirstname(updatedProfile.getFirstname());
+        profile.setLastname(updatedProfile.getLastname());
+        profile.setAge(updatedProfile.getAge());
+        profile.setEmail(updatedProfile.getEmail());
+        profile.setSex(updatedProfile.getSex());
         profile.setFamilyStatus(updatedProfile.getFamilyStatus());
-                profile.setTown(updatedProfile.getTown());
-               profile.setPhone(updatedProfile.getPhone());
-        return profileRepository.save(profile);
+        profile.setTown(updatedProfile.getTown());
+        profile.setPhone(updatedProfile.getPhone());
+        Profile save = profileRepository.save(profile);
+        ProfileDto convert = profileToDtoConverter.convert(save);
+        return convert;
     }
 
     @Override
     public void createChat(Long profileId, Long anotherProfileId, String chatName) throws ServiceException {
         checkProfiles(profileId, anotherProfileId);
-        Profile profile = findById(profileId);
-        Profile anotherProfile = findById(anotherProfileId);
+        Profile profile = dtoToProfileConverter.convert(findById(profileId));
+        Profile anotherProfile = dtoToProfileConverter.convert(findById(anotherProfileId));
         chatName = createChatName(profile, anotherProfile, chatName);
         chatService.save(Chat.builder().name(chatName).profiles(Arrays.asList(profile, anotherProfile)).build());
     }
 
-    private void checkProfiles(Long profileId, Long anotherProfileId) throws ServiceException {
+    private void checkProfiles(Long profileId, Long anotherProfileId) {
         isPresent(profileId);
         isPresent(anotherProfileId);
     }
 
     private String createChatName(Profile profile, Profile anotherProfile, String chatName) {
-        if (chatName.isEmpty()){
+        if (chatName.isEmpty()) {
             chatName = profile.getFirstname() + CHAT_NAME_DELIMITER + anotherProfile.getFirstname();
         }
         return chatName;
@@ -94,23 +104,25 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
 
-    private void isPresent(Long id) throws ServiceException {
-        if (!profileRepository.findById(id).isPresent()) {
-            throw new ServiceException("Profile haven't been founded by id : " + id);
+    private boolean isPresent(Long id) {
+        return profileRepository.findById(id).isPresent();
+    }
+
+    @Override
+    public ProfileDto findByUserId(Long userId) {
+        Optional<Profile> result = profileRepository.findProfileByUserId(userId);
+        if (!result.isPresent()) {
+            return ProfileDto.builder().message("Profile haven't been founded by user id: " + userId).build();
         }
+        return profileToDtoConverter.convert(result.get());
     }
 
     @Override
-    public Profile findByUserId(Long userId) throws ServiceException {
-        Profile profile = profileRepository.findProfileByUserId(userId)
-                .orElseThrow(() -> new ServiceException("Profile haven't been founded by user id: " + userId));
-        return profile;
-    }
-
-    @Override
-    public Profile findById(Long id) throws ServiceException {
-        Profile profile = profileRepository.findById(id)
-                .orElseThrow(() -> new ServiceException("Profile haven't been founded by id : " + id));
-        return profile;
+    public ProfileDto findById(Long id) {
+        Optional<Profile> result = profileRepository.findById(id);
+        if (!result.isPresent()) {
+            return ProfileDto.builder().message("Profile haven't been founded by id : " + id).build();
+        }
+        return profileToDtoConverter.convert(result.get());
     }
 }

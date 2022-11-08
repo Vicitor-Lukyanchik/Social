@@ -3,9 +3,8 @@ package com.social.service;
 import com.social.entity.Chat;
 import com.social.entity.Message;
 import com.social.entity.Profile;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 
-import javax.validation.Valid;
 import java.util.List;
 
 public interface MessageService {

@@ -1,9 +1,8 @@
 package com.social.service;
 
 import com.social.entity.*;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 
-import javax.validation.Valid;
 import java.util.List;
 
 public interface PostService {

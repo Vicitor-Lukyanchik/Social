@@ -1,21 +1,21 @@
 package com.social.service;
 
+import com.social.dto.InterestDto;
 import com.social.entity.Interest;
-import com.social.service.exception.ServiceException;
 
 import java.util.List;
 
 public interface InterestService {
 
-    Interest save(Interest interest) throws ServiceException;
+    InterestDto save(InterestDto interestDto);
 
-    Interest update(Long id, Interest interest) throws ServiceException;
+    InterestDto update(Long id, InterestDto interestDto);
 
-    void delete(Long id) throws ServiceException;
+    InterestDto delete(Long id);
 
     List<Interest> findAll();
 
     boolean isExist(String name);
 
-    Interest findById(Long id) throws ServiceException;
+    InterestDto findById(Long id);
 }

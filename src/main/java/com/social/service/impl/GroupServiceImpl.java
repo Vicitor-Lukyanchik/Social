@@ -6,13 +6,12 @@ import com.social.entity.Profile;
 import com.social.repository.GroupRepository;
 import com.social.service.GroupService;
 import com.social.service.InterestService;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

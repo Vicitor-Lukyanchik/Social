@@ -2,31 +2,31 @@ package com.social.service.impl;
 
 import com.social.converter.RegistrationRequestToProfileConverter;
 import com.social.converter.RegistrationRequestToUserConverter;
+import com.social.converter.UserToDtoConverter;
+import com.social.dto.UserDto;
 import com.social.dto.authentication.AuthenticationRequestDto;
 import com.social.dto.authentication.RegistrationRequestDto;
 import com.social.entity.Profile;
 import com.social.entity.Role;
 import com.social.entity.Status;
 import com.social.entity.User;
-import com.social.exception.PasswordRepeatException;
 import com.social.repository.UserRepository;
-import com.social.security.jwt.JwtTokenProvider;
+import com.social.jwt.JwtTokenProvider;
 import com.social.service.ProfileService;
 import com.social.service.RoleService;
 import com.social.service.UserService;
-import com.social.service.exception.ServiceException;
-import com.social.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -43,55 +43,48 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RegistrationRequestToUserConverter requestToUserConverter;
     private final RegistrationRequestToProfileConverter requestToProfileConverter;
+    private final UserToDtoConverter userToDtoConverter;
 
     @Override
-    public String login(AuthenticationRequestDto requestDto, RedirectAttributes redirectAttributes) {
-        try {
+    @Transactional
+    public UserDto login(AuthenticationRequestDto requestDto) {
             String username = requestDto.getUsername();
+        try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-            User user = findByUsername(username);
-            jwtTokenProvider.createToken(username, user.getRoles());
-            return "redirect:/profiles/" + user.getId();
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("isNotLogin", true);
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/auth/login";
+        } catch (AuthenticationException e) {
+            return UserDto.builder().message("Invalid password").build();
         }
+        UserDto userDto = findByUsername(username);
+            jwtTokenProvider.createToken(username, userDto.getRoles());
+            return userDto;
     }
 
     @Override
     @Transactional
-    public String register(RegistrationRequestDto requestDto, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        try {
-            if (!requestDto.getPassword().equals(requestDto.getRepeatedPassword())) {
-                throw new PasswordRepeatException("Password should repeat correct");
-            }
-
-            User registeredUser = registerUser(requestToUserConverter.convert(requestDto),
+    public UserDto register(RegistrationRequestDto requestDto) {
+        if (!requestDto.getPassword().equals(requestDto.getRepeatedPassword())) {
+            return UserDto.builder().message("Password should repeat correct").build();
+        }
+            UserDto registeredUser = registerUser(requestToUserConverter.convert(requestDto),
                     requestToProfileConverter.convert(requestDto));
             jwtTokenProvider.createToken(registeredUser.getUsername(), registeredUser.getRoles());
-            return "redirect:/profiles/" + registeredUser.getId();
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("isNotRegister", true);
-            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/auth/register";
-        }
+            return registeredUser;
     }
 
     @Override
     @Transactional
-    public User registerUser(User user, Profile profile) throws ServiceException {
+    public UserDto registerUser(@Valid User user, @Valid Profile profile) {
         if (isUsernameUsed(user.getUsername())) {
-            throw new ServiceException("Username is already exists");
+            return UserDto.builder().message("Username is already exists").build();
         }
 
         User registeredUser = userRepository.save(buildUser(user));
         profileService.save(profile, user);
 
-        return registeredUser;
+        return userToDtoConverter.convert(registeredUser);
     }
 
-    private User buildUser(User user) throws ServiceException {
+    private User buildUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         List<Role> userRoles = roleService.findByName(ROLE_USER);
         user.setRoles(userRoles);
@@ -104,16 +97,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) throws UserNotFoundException {
-        User result = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User haven't founded by username : " + username));
-        return result;
+    public UserDto findByUsername(String username) {
+        Optional<User> result = userRepository.findByUsername(username);
+        if (!result.isPresent()){
+            return UserDto.builder().message("User haven't founded by username : " + username).build();
+        }
+        return userToDtoConverter.convert(result.get());
     }
 
     @Override
-    public User findById(Long id) throws UserNotFoundException {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User haven't been founded by id : " + id));
-        return user;
+    public UserDto findById(Long id) {
+        Optional<User> result = userRepository.findById(id);
+        if (!result.isPresent()){
+            return UserDto.builder().message("User haven't founded by id : " + id).build();
+        }
+        return userToDtoConverter.convert(result.get());
     }
 }

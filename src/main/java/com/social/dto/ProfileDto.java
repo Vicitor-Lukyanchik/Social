@@ -26,7 +26,6 @@ public class ProfileDto {
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Pattern(regexp = "UNDEFINED|MALE|FEMALE", message = "Sex should be : UNDEFINED, MALE, FEMALE")
     private Sex sex;
 
     @Min(value = 6, message = "Age should be more than 6")
@@ -43,4 +42,6 @@ public class ProfileDto {
     @Size(max = 50, message = "Family status should be less than 50")
     @Pattern(regexp = "Undefined|married|not married|in love|actively looking", message = "Family status should be : Undefined, married, not married, in love, actively looking")
     private String familyStatus;
+
+    private String message;
 }

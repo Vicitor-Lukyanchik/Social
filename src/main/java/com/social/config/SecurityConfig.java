@@ -1,7 +1,7 @@
 package com.social.config;
 
-import com.social.security.jwt.JwtConfigurer;
-import com.social.security.jwt.JwtTokenProvider;
+import com.social.jwt.JwtConfigurer;
+import com.social.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,11 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(LOGIN_ENDPOINT).permitAll()
                 .antMatchers(REGISTER_ENDPOINT).permitAll()
-                .antMatchers("/interest/**").permitAll()
+                .antMatchers("/interests/**").permitAll()
                 .antMatchers("/profiles/**").permitAll()
                 .antMatchers(REGISTER_ENDPOINT).permitAll()
                 .antMatchers(ADMIN_ENDPOINT).hasRole(ADMIN)
-                .anyRequest().authenticated()
+                //.anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }

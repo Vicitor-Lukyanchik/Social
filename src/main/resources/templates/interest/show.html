@@ -8,9 +8,9 @@
 <p th:text="${interest.getId()}">id</p>
 <p th:text="${interest.getName()}">name</p>
 
-<a th:href="@{/interest/{id}/edit(id=${interest.getId()})}">Edit</a>
+<a th:href="@{/interests/{id}/edit(id=${interest.getId()})}">Edit</a>
 
-<form th:method="POST" th:action="@{/interest/{id}/delete(id=${interest.getId()})}">
+<form th:method="POST" th:action="@{/interests/{id}/delete(id=${interest.getId()})}">
     <input type="submit" value="Delete"/>
 </form>
 

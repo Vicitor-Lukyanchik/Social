@@ -6,17 +6,10 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InterestConverter implements Converter<Interest, InterestDto> {
+public class DtoToInterestConverter implements Converter<InterestDto, Interest> {
 
     @Override
-    public InterestDto convert(Interest interest) {
-        return InterestDto.builder()
-                .id(interest.getId())
-                .name(interest.getName())
-                .build();
-    }
-
-    public Interest convertToInterest(InterestDto interestDto){
+    public Interest convert(InterestDto interestDto){
         return Interest.builder()
                 .id(interestDto.getId())
                 .name(interestDto.getName())

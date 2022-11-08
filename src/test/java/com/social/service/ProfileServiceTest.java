@@ -1,20 +1,23 @@
 package com.social.service;
 
+import com.social.converter.ProfileToDtoConverter;
+import com.social.dto.ProfileDto;
+import com.social.dto.UserDto;
 import com.social.entity.Chat;
 import com.social.entity.Group;
 import com.social.entity.Profile;
 import com.social.entity.User;
 import com.social.repository.ProfileRepository;
 import com.social.repository.UserRepository;
-import com.social.service.exception.ServiceException;
-import com.social.validator.BeanValidator;
-import com.social.validator.ValidationException;
+import com.social.exception.ServiceException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import javax.validation.ConstraintViolationException;
 
 import static com.social.Constants.*;
 import static com.social.util.MockUtils.*;
@@ -35,6 +38,9 @@ public class ProfileServiceTest {
     private ProfileRepository profileRepository;
 
     @Autowired
+    private ProfileToDtoConverter profileToDtoConverter;
+
+    @Autowired
     private UserRepository userRepository;
 
     @MockBean
@@ -43,8 +49,6 @@ public class ProfileServiceTest {
     @MockBean
     private GroupService groupService;
 
-    @Autowired
-    private BeanValidator validator;
 
     @AfterEach
     public void cleanUp() {
@@ -57,90 +61,101 @@ public class ProfileServiceTest {
 
     @Test
     public void saveShouldThrowExceptionWhenFirstnameMoreThan50() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setFirstname(MORE_THAN_50);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstnameLessThan2() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setFirstname(LESS_THAN_2);
 
-        assertThrows(ServiceException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstnameIsEmpty() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setFirstname(EMPTY_STRING);
 
-        assertThrows(ServiceException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstLetterInFirstnameLowercase() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setFirstname(LOWERCASE_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenLastnameMoreThan50() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setLastname(MORE_THAN_50);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenLastnameLessThan2() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setLastname(LESS_THAN_2);
 
-        assertThrows(ServiceException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenLastnameIsEmpty() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setLastname(EMPTY_STRING);
 
-        assertThrows(ServiceException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenFirstLetterInLastnameLowercase() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setLastname(LOWERCASE_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenAgeLessThan6() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setAge(AGE_LESS_THAN_6);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenAgeMoreThan120() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setAge(AGE_MORE_THAN_120);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
     public void saveShouldThrowExceptionWhenMailNotValid() {
+        User user = createUser();
         Profile profile = createProfile();
         profile.setEmail(NOT_VALID_EMAIL);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.save(profile, user));
     }
 
     @Test
@@ -160,60 +175,59 @@ public class ProfileServiceTest {
 
     @Test
     public void updateShouldThrowExceptionWhenTownFirstLetterLowercase() {
-        Profile profile = createProfile();
+        ProfileDto profile = profileToDtoConverter.convert(createProfile());
         profile.setTown(LOWERCASE_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.update(ID, profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenTownLessThan2() {
-        Profile profile = createProfile();
+        ProfileDto profile = profileToDtoConverter.convert(createProfile());
         profile.setTown(LESS_THAN_2);
 
-        assertThrows(ServiceException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.update(ID, profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenTownMoreThan50() {
-        Profile profile = createProfile();
+        ProfileDto profile = profileToDtoConverter.convert(createProfile());
         profile.setTown(MORE_THAN_50);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.update(ID, profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenPhoneLessThan7() {
-        Profile profile = createProfile();
+        ProfileDto profile = profileToDtoConverter.convert(createProfile());
         profile.setPhone(LESS_THAN_7);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.update(ID, profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenPhoneMoreThan15() {
-        Profile profile = createProfile();
+        ProfileDto profile = profileToDtoConverter.convert(createProfile());
         profile.setPhone(MORE_THAN_15);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.update(ID, profile));
     }
 
     @Test
     public void updateShouldThrowExceptionWhenPhoneMoreThan50() {
-        Profile profile = createProfile();
+        ProfileDto profile = profileToDtoConverter.convert(createProfile());
         profile.setPhone(MORE_THAN_50);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> profileService.update(ID, profile));
     }
 
     @Test
-    public void updateShouldUpdateProfile() throws ServiceException {
+    public void updateShouldUpdateProfile() {
         User user = userRepository.save(createUser());
-        Profile expected = profileRepository.save(createProfile(user));
+        ProfileDto expected = profileToDtoConverter.convert(profileRepository.save(createProfile(user)));
 
-        Profile actual = profileService.update(expected.getId(), expected);
+        ProfileDto actual = profileService.update(expected.getId(), expected);
 
-        assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getFirstname(), actual.getFirstname());
         assertEquals(expected.getLastname(), actual.getLastname());
         assertEquals(expected.getEmail(), actual.getEmail());
@@ -222,11 +236,6 @@ public class ProfileServiceTest {
         assertEquals(expected.getTown(), actual.getTown());
         assertEquals(expected.getPhone(), actual.getPhone());
         assertEquals(expected.getFamilyStatus(), actual.getFamilyStatus());
-    }
-
-    @Test
-    public void createChatShouldThrowExceptionWhenProfileNotExist() {
-        assertThrows(ServiceException.class, () -> profileService.createChat(ID, ANOTHER_ID, CHAT_NAME));
     }
 
     @Test
@@ -273,15 +282,19 @@ public class ProfileServiceTest {
 
     @Test
     public void findByUserShouldThrowExceptionWhenProfileNotFound() {
-        assertThrows(ServiceException.class, () -> profileService.findByUserId(ID));
+        ProfileDto expected = ProfileDto.builder().message("Profile haven't been founded by user id: " + ID).build();
+
+        ProfileDto actual = profileService.findByUserId(ID);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
-    public void findByUserIdShouldReturnProfile() throws ServiceException {
+    public void findByUserIdShouldReturnProfile() {
         User user = userRepository.save(createUser());
-        Profile expected = profileRepository.save(createProfile(user));
+        ProfileDto expected = profileToDtoConverter.convert(profileRepository.save(createProfile(user)));
 
-        Profile actual = profileService.findByUserId(user.getId());
+        ProfileDto actual = profileService.findByUserId(user.getId());
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getFirstname(), actual.getFirstname());
@@ -292,15 +305,19 @@ public class ProfileServiceTest {
 
     @Test
     public void findByIdShouldThrowExceptionWhenProfileNotFound() {
-        assertThrows(ServiceException.class, () -> profileService.findById(ID));
+        ProfileDto expected = ProfileDto.builder().message("Profile haven't been founded by id : " + ID).build();
+
+        ProfileDto actual = profileService.findById(ID);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
-    public void findByIdShouldReturnProfile() throws ServiceException {
+    public void findByIdShouldReturnProfile() {
         User user = userRepository.save(createUser());
-        Profile expected = profileRepository.save(createProfile(user));
+        ProfileDto expected = profileToDtoConverter.convert(profileRepository.save(createProfile(user)));
 
-        Profile actual = profileService.findById(expected.getId());
+        ProfileDto actual = profileService.findById(expected.getId());
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getFirstname(), actual.getFirstname());

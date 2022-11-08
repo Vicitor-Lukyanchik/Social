@@ -31,4 +31,6 @@ public class RegistrationRequestDto {
     @Min(value = 6, message = "Age should be more than 6")
     @Max(value = 120, message = "Age should less than 120")
     private Integer age;
+
+    private String message;
 }

@@ -1,4 +1,4 @@
-package com.social.security.jwt;
+package com.social.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,4 +1,4 @@
-package com.social.entity.converter;
+package com.social.converter;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

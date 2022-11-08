@@ -1,14 +1,11 @@
 package com.social.controller;
 
-import com.social.converter.InterestConverter;
 import com.social.dto.InterestDto;
-import com.social.entity.Interest;
 import com.social.service.InterestService;
-import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,10 +13,8 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/interests")
-@Validated
 public class InterestController {
 
-    private final InterestConverter interestConverter;
     private final InterestService interestService;
 
     @GetMapping()
@@ -29,37 +24,61 @@ public class InterestController {
     }
 
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id, Model model) throws ServiceException {
+    public String show(@PathVariable("id") Long id, Model model) {
         model.addAttribute("interest", interestService.findById(id));
         return "interest/show";
     }
 
     @GetMapping("/new")
-    public String newPerson(@Valid @ModelAttribute("interest") Interest interest) {
+    public String newPerson(Model model) {
+        model.addAttribute("interest", InterestDto.builder().message("").build());
         return "interest/new";
     }
 
     @PostMapping()
-    public String create(@Valid @ModelAttribute("interest") InterestDto interestDto) throws ServiceException {
-        interestService.save(interestConverter.convertToInterest(interestDto));
-        return "redirect:/interest";
+    public String create(@Valid @ModelAttribute("interest") InterestDto interestDto, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "interest/new";
+        }
+
+        if (hasError(interestDto, interestService.save(interestDto).getMessage())) {
+            return "interest/new";
+        }
+        return "redirect:/interests";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") Long id) throws ServiceException {
-        model.addAttribute("interest", interestConverter.convert(interestService.findById(id)));
+    public String edit(Model model, @PathVariable("id") Long id) {
+        model.addAttribute("interest", interestService.findById(id));
         return "interest/edit";
     }
 
     @PostMapping("/{id}")
-    public String update(@PathVariable("id") Long id, @Valid @ModelAttribute InterestDto interestDto) throws ServiceException {
-        interestService.update(id, interestConverter.convertToInterest(interestDto));
-        return "redirect:/interest";
+    public String update(@Valid @ModelAttribute("interest") InterestDto interestDto,
+                         BindingResult bindingResult, @PathVariable("id") Long id) {
+        if (bindingResult.hasErrors()) {
+            interestDto.setMessage("");
+            return "interest/edit";
+        }
+        InterestDto update = interestService.update(id, interestDto);
+
+        if (hasError(interestDto, update.getMessage())) {
+            return "interest/edit";
+        }
+        return "redirect:/interests";
+    }
+
+    private boolean hasError(InterestDto interestDto, String message) {
+        if (!message.isEmpty()) {
+            interestDto.setMessage(message);
+            return true;
+        }
+        return false;
     }
 
     @PostMapping("/{id}/delete")
-    public String delete(@PathVariable("id") Long id) throws ServiceException {
+    public String delete(@PathVariable("id") Long id) {
         interestService.delete(id);
-        return "redirect:/interest";
+        return "redirect:/interests";
     }
 }

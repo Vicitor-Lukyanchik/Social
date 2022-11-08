@@ -1,15 +1,16 @@
 package com.social.service;
 
+import com.social.converter.DtoToInterestConverter;
+import com.social.converter.InterestToDtoConverter;
+import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.repository.InterestRepository;
-import com.social.service.exception.ServiceException;
-import com.social.validator.BeanValidator;
-import com.social.validator.ValidationException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,10 +25,13 @@ public class InterestServiceTest {
     private InterestService interestService;
 
     @Autowired
-    private InterestRepository interestRepository;
+    private InterestToDtoConverter interestToDtoConverter;
 
     @Autowired
-    private BeanValidator validator;
+    private DtoToInterestConverter dtoToInterestConverter;
+
+    @Autowired
+    private InterestRepository interestRepository;
 
     @AfterEach
     public void cleanUp(){
@@ -37,64 +41,73 @@ public class InterestServiceTest {
 
     @Test
     public void saveShouldThrowExceptionWhenInterestNameEmpty() {
-        Interest interest = createInterest();
+        InterestDto interest = createInterest();
         interest.setName(EMPTY_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(interest));
+        assertThrows(ConstraintViolationException.class, () -> interestService.save(interest));
     }
 
     @Test
-    public void saveShouldSaveInterest() throws ServiceException {
-        Interest expected = createInterest();
+    public void saveShouldSaveInterest() {
+        InterestDto expected = createInterest();
 
-        Interest actual = interestService.save(expected);
+        InterestDto actual = interestService.save(expected);
 
         assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getId(), actual.getId());
     }
 
     @Test
     public void updateShouldThrowExceptionWhenInterestNotExist() {
-        Interest interest = createInterest();
-        interest.setId(ID);
+        InterestDto expected = InterestDto.builder()
+                .message("Interest haven't been founded by id : " + ID).build();
 
-        assertThrows(ServiceException.class, () -> interestService.update(ID, interest));
+        InterestDto actual = interestService.update(ID, expected);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
     public void updateShouldThrowExceptionWhenInterestWithThisNameExist() {
-        interestRepository.save(createInterest());
-        Interest interest = createInterest();
-        interest.setId(ID);
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
 
-        assertThrows(ServiceException.class, () -> interestService.update(ID, interest));
+        InterestDto expected = InterestDto.builder()
+                .message("Interest have been founded with name " + interest.getName()).build();
+
+        InterestDto actual = interestService.update(interest.getId(), interestToDtoConverter.convert(interest));
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
-    public void updateShouldUpdateInterest() throws ServiceException {
-        Interest interest = interestRepository.save(createInterest());
-        Interest expected = createInterest();
+    public void updateShouldUpdateInterest() {
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
+        InterestDto expected = createInterest();
         expected.setName(ANOTHER_INTEREST_NAME);
 
-        Interest actual = interestService.update(interest.getId(), expected);
+        InterestDto actual = interestService.update(interest.getId(), expected);
 
         assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getId(), actual.getId());
     }
 
 
     @Test
     public void deleteShouldThrowExceptionWhenInterestNotExist() {
-        assertThrows(ServiceException.class, () -> interestService.delete(ID));
+        InterestDto expected = InterestDto.builder()
+                .message("Interest haven't been founded by id : " + ID).build();
+
+        InterestDto actual = interestService.delete(ID);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
-    public void deleteShouldDeleteInterest() throws ServiceException {
-        Interest interest = interestRepository.save(createInterest());
+    public void deleteShouldDeleteInterest() {
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
 
         interestService.delete(interest.getId());
 
-        assertTrue(interestRepository.findAll().isEmpty());
+        List<Interest> all = interestRepository.findAll();
+        assertTrue(all.isEmpty());
     }
 
     @Test
@@ -104,14 +117,14 @@ public class InterestServiceTest {
 
     @Test
     public void isExistShouldReturnInterest() {
-        interestRepository.save(createInterest());
+        interestRepository.save(dtoToInterestConverter.convert(createInterest()));
 
         assertTrue(interestService.isExist(INTEREST_NAME));
     }
 
     @Test
     public void findByAllShouldReturnListInterests() {
-        Interest interest = interestRepository.save(createInterest());
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
         List<Interest> expected = Arrays.asList(interest);
 
         List<Interest> actual = interestService.findAll();
@@ -121,14 +134,20 @@ public class InterestServiceTest {
 
     @Test
     public void findByIdShouldThrowExceptionWhenInterestNotFound() {
-        assertThrows(ServiceException.class, () -> interestService.findById(ID));
+        InterestDto expected = InterestDto.builder()
+                .message("Interest haven't been founded by id : " + ID).build();
+
+        InterestDto actual = interestService.findById(ID);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
-    public void findByIdShouldReturnInterest() throws ServiceException {
-        Interest expected = interestRepository.save(createInterest());
+    public void findByIdShouldReturnInterest() {
+        InterestDto expected = interestToDtoConverter
+                .convert(interestRepository.save(dtoToInterestConverter.convert(createInterest())));
 
-        Interest actual = interestService.findById(expected.getId());
+        InterestDto actual = interestService.findById(expected.getId());
 
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getId(), actual.getId());

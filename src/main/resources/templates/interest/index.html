@@ -7,14 +7,14 @@
 <body>
 
 <div th:each="interest : ${interests}">
-    <a th:href="@{/interest/{id}(id=${interest.getId()})}"
+    <a th:href="@{/interests/{id}(id=${interest.getId()})}"
        th:text="${interest.getName()}">interest</a>
 </div>
 
 <br/>
 <hr/>
 
-<a href="/interest/new">Create new interest</a>
+<a href="/interests/new">Create new interest</a>
 
 </body>
 </html>

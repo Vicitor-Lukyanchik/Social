@@ -8,9 +8,7 @@
 
 <h2>Register</h2>
 
-<div th:if="${isNotRegister}">
-    <div class="error" th:text="${errorMessage}"></div>
-</div>
+    <div class="error" th:text="${register.getMessage()}"></div>
 
 <form th:method="POST" th:action="@{/auth/register}" th:object="${register}">
     <label for="username">Enter username: </label>

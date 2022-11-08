@@ -13,4 +13,6 @@ public class InterestDto {
 
     @Size(min = 1, max = 50, message = "Interest name should be less than 50 and more than 1")
     private String name;
+
+    private String message;
 }

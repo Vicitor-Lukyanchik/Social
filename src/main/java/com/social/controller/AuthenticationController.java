@@ -1,18 +1,12 @@
 package com.social.controller;
 
-import com.social.converter.RegistrationRequestToProfileConverter;
-import com.social.converter.RegistrationRequestToUserConverter;
+import com.social.dto.UserDto;
 import com.social.dto.authentication.AuthenticationRequestDto;
 import com.social.dto.authentication.RegistrationRequestDto;
-import com.social.exception.PasswordRepeatException;
-import com.social.entity.User;
-import com.social.security.jwt.JwtTokenProvider;
 import com.social.service.UserService;
-import com.social.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,20 +29,40 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public String login(@Valid @ModelAttribute AuthenticationRequestDto requestDto, RedirectAttributes redirectAttributes) {
-        return userService.login(requestDto, redirectAttributes);
+        UserDto userDto = userService.login(requestDto);
+        if (userDto.getMessage().isEmpty()) {
+            return "redirect:/profiles/" + userDto.getId();
+        } else {
+            redirectAttributes.addFlashAttribute("isNotLogin", true);
+            redirectAttributes.addFlashAttribute("errorMessage", userDto.getMessage());
+            return "redirect:/auth/login";
+        }
     }
 
     @GetMapping("/register")
     public String registerTemplate(@ModelAttribute("register") RegistrationRequestDto requestDto) {
+        requestDto.setMessage("");
         return "authentication/register";
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @ModelAttribute("register") RegistrationRequestDto requestDto, BindingResult bindingResult,
-                                 RedirectAttributes redirectAttributes) {
+    public String registerUser(@Valid @ModelAttribute("register") RegistrationRequestDto requestDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "authentication/register";
         }
-        return userService.register(requestDto, bindingResult, redirectAttributes);
+        UserDto userDto = userService.register(requestDto);
+
+        if (hasError(requestDto, userDto.getMessage())){
+            return "authentication/register";
+        }
+        return "redirect:/profiles/";
+    }
+
+    private boolean hasError(RegistrationRequestDto registrationRequestDto, String message) {
+        if (!message.isEmpty()) {
+            registrationRequestDto.setMessage(message);
+            return true;
+        }
+        return false;
     }
 }

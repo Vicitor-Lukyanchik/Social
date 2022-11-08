@@ -6,12 +6,11 @@ import com.social.service.ChatService;
 import com.social.service.GroupService;
 import com.social.service.MessageService;
 import com.social.service.PostService;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;

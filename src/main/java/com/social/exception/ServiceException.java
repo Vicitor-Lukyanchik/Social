@@ -1,4 +1,4 @@
-package com.social.service.exception;
+package com.social.exception;
 
 public class ServiceException extends Exception {
 
