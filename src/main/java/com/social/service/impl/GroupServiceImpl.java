@@ -43,8 +43,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group findById(Long id) throws ServiceException {
-        Group group = groupRepository.findById(id)
+        return groupRepository.findById(id)
                 .orElseThrow(() -> new ServiceException("Group haven't been founded by id : " + id));
-        return group;
     }
 }

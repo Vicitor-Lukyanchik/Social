@@ -15,14 +15,13 @@ import java.util.stream.Collectors;
 public final class JwtUserFactory {
 
     public static JwtUser create(User user) {
-        JwtUser result = new JwtUser(
-                user.getId(),
-                user.getUsername(),
-                user.getPassword(),
-                mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
-                user.getStatus().equals(Status.ACTIVE)
-        );
-        return result;
+        return JwtUser.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities(mapToGrantedAuthorities(new ArrayList<>(user.getRoles())))
+                .enabled(user.getStatus().equals(Status.ACTIVE))
+                .build();
     }
 
     private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> userRoles) {

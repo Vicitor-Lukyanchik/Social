@@ -37,8 +37,7 @@ public class PostServiceImpl implements PostService {
         Chat chat = chatService.save(Chat.builder().name(post.getTitle())
                 .profiles(group.getJoinProfiles()).build());
         post.setChat(chat);
-        Post result = postRepository.save(post);
-        return result;
+        return postRepository.save(post);
     }
 
     @Override
@@ -95,8 +94,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post findById(Long id) throws ServiceException {
-        Post post = postRepository.findById(id)
+        return postRepository.findById(id)
                 .orElseThrow(() -> new ServiceException("Post haven't been founded by id : " + id));
-        return post;
     }
 }

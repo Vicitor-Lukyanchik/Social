@@ -1,4 +1,4 @@
-package com.social.jwt;
+package com.social.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

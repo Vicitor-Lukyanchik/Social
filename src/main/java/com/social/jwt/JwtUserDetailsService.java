@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Log4j2
 public class JwtUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -26,8 +25,6 @@ public class JwtUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User with username: " + username + " not found");
         }
 
-        JwtUser jwtUser = JwtUserFactory.create(user.get());
-        log.info("IN loadUserByUsername - user with username: {} successfully loaded", username);
-        return jwtUser;
+        return JwtUserFactory.create(user.get());
     }
 }

@@ -17,8 +17,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Chat save(Chat chat) {
-        Chat result = chatRepository.save(chat);
-        return result;
+        return chatRepository.save(chat);
     }
 
     @Override
@@ -33,8 +32,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Chat findById(Long id) throws ServiceException {
-        Chat chat = chatRepository.findById(id)
+        return chatRepository.findById(id)
                 .orElseThrow(() -> new ServiceException("Chat haven't been founded by id : " + id));
-        return chat;
     }
 }

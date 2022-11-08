@@ -1,11 +1,13 @@
 package com.social.jwt;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Builder
 public class JwtUser implements UserDetails {
 
     private final Long id;

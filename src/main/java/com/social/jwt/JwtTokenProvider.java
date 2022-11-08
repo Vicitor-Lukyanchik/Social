@@ -1,6 +1,7 @@
 package com.social.jwt;
 
 import com.social.entity.Role;
+import com.social.exception.JwtAuthenticationException;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
