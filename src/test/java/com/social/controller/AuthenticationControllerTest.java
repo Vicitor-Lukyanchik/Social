@@ -1,10 +1,8 @@
 package com.social.controller;
 
-import com.social.dto.ProfileDto;
 import com.social.dto.UserDto;
 import com.social.dto.authentication.AuthenticationRequestDto;
 import com.social.dto.authentication.RegistrationRequestDto;
-import com.social.service.ProfileService;
 import com.social.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +25,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthenticationControllerTest {
 
     @Autowired
-    private AuthenticationController profileController;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private UserService userService;
-
 
     @Test
     public void getLogin() throws Exception {
@@ -71,6 +65,7 @@ public class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(model().size(0))
                 .andExpect(view().name("redirect:/profiles/" + ID))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 
@@ -81,6 +76,7 @@ public class AuthenticationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(model().size(0))
                 .andExpect(view().name("redirect:/profiles/"))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 }

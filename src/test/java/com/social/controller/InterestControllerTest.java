@@ -1,8 +1,6 @@
 package com.social.controller;
 
 import com.social.dto.InterestDto;
-import com.social.entity.Interest;
-import com.social.repository.InterestRepository;
 import com.social.service.InterestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.social.Constants.ID;
-import static com.social.util.MockUtils.createInterest;
 import static com.social.util.MockUtils.createInterestDto;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
@@ -25,8 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class InterestControllerTest {
 
-    @Autowired
-    private InterestController interestController;
 
     @Autowired
     private MockMvc mockMvc;
@@ -78,6 +73,7 @@ public class InterestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(model().size(0))
                 .andExpect(view().name("redirect:/interests"))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 
@@ -102,6 +98,7 @@ public class InterestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(model().size(0))
                 .andExpect(view().name("redirect:/interests"))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 
@@ -112,6 +109,7 @@ public class InterestControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(model().size(0))
                 .andExpect(view().name("redirect:/interests"))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 }

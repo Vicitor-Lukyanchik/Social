@@ -23,16 +23,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ProfileControllerTest {
 
     @Autowired
-    private ProfileController profileController;
-
-    @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private ProfileService profileService;
 
     @Test
-    public void getInterestById() throws Exception {
+    public void getProfileById() throws Exception {
         given(profileService.findById(isA(Long.class))).willReturn(createProfileDto());
         mockMvc.perform(get("/profiles/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -58,12 +55,13 @@ public class ProfileControllerTest {
     }
 
     @Test
-    public void postUpdateInterest() throws Exception {
+    public void postUpdateProfile() throws Exception {
         given(profileService.update(isA(Long.class), isA(ProfileDto.class))).willReturn(createProfileDto());
         mockMvc.perform(post("/profiles/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(model().size(0))
                 .andExpect(view().name("redirect:/profiles/" + ID))
+                .andExpect(status().is3xxRedirection())
                 .andReturn();
     }
 }
