@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.social.Constants.*;
-import static com.social.util.MockUtils.createInterest;
+import static com.social.util.MockUtils.createInterestDto;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -41,7 +41,7 @@ public class InterestServiceTest {
 
     @Test
     public void saveShouldThrowExceptionWhenInterestNameEmpty() {
-        InterestDto interest = createInterest();
+        InterestDto interest = createInterestDto();
         interest.setName(EMPTY_STRING);
 
         assertThrows(ConstraintViolationException.class, () -> interestService.save(interest));
@@ -49,7 +49,7 @@ public class InterestServiceTest {
 
     @Test
     public void saveShouldSaveInterest() {
-        InterestDto expected = createInterest();
+        InterestDto expected = createInterestDto();
 
         InterestDto actual = interestService.save(expected);
 
@@ -68,7 +68,7 @@ public class InterestServiceTest {
 
     @Test
     public void updateShouldThrowExceptionWhenInterestWithThisNameExist() {
-        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
 
         InterestDto expected = InterestDto.builder()
                 .message("Interest have been founded with name " + interest.getName()).build();
@@ -80,8 +80,8 @@ public class InterestServiceTest {
 
     @Test
     public void updateShouldUpdateInterest() {
-        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
-        InterestDto expected = createInterest();
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
+        InterestDto expected = createInterestDto();
         expected.setName(ANOTHER_INTEREST_NAME);
 
         InterestDto actual = interestService.update(interest.getId(), expected);
@@ -102,7 +102,7 @@ public class InterestServiceTest {
 
     @Test
     public void deleteShouldDeleteInterest() {
-        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
 
         interestService.delete(interest.getId());
 
@@ -117,14 +117,14 @@ public class InterestServiceTest {
 
     @Test
     public void isExistShouldReturnInterest() {
-        interestRepository.save(dtoToInterestConverter.convert(createInterest()));
+        interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
 
         assertTrue(interestService.isExist(INTEREST_NAME));
     }
 
     @Test
     public void findByAllShouldReturnListInterests() {
-        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterest()));
+        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
         List<Interest> expected = Arrays.asList(interest);
 
         List<Interest> actual = interestService.findAll();
@@ -145,7 +145,7 @@ public class InterestServiceTest {
     @Test
     public void findByIdShouldReturnInterest() {
         InterestDto expected = interestToDtoConverter
-                .convert(interestRepository.save(dtoToInterestConverter.convert(createInterest())));
+                .convert(interestRepository.save(dtoToInterestConverter.convert(createInterestDto())));
 
         InterestDto actual = interestService.findById(expected.getId());
 

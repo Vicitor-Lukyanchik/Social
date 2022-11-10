@@ -1,6 +1,8 @@
 package com.social.util;
 
 import com.social.dto.InterestDto;
+import com.social.dto.ProfileDto;
+import com.social.dto.UserDto;
 import com.social.entity.*;
 
 import java.time.LocalDateTime;
@@ -14,13 +16,22 @@ public class MockUtils {
         return Chat.builder().name(CHAT_NAME).build();
     }
 
-    public static InterestDto createInterest() {
-        return InterestDto.builder().name(INTEREST_NAME).build();
+    public static InterestDto createInterestDto() {
+        return InterestDto.builder().name(INTEREST_NAME).message("").build();
+    }
+    public static Interest createInterest() {
+        return Interest.builder().name(INTEREST_NAME).build();
     }
 
     public static User createUser() {
         return User.builder().username(USERNAME).password(PASSWORD)
                 .status(STATUS).roles(Collections.emptyList())
+                .build();
+    }
+
+    public static UserDto createUserDto() {
+        return UserDto.builder().username(USERNAME).password(PASSWORD)
+                .status(STATUS).roles(Collections.emptyList()).message("")
                 .build();
     }
 
@@ -44,6 +55,16 @@ public class MockUtils {
                 .createdGroups(Collections.emptyList())
                 .joinGroups(Collections.emptyList())
                 .chats(Collections.emptyList())
+                .build();
+    }
+
+    public static ProfileDto createProfileDto() {
+        return ProfileDto.builder()
+                .firstname(FIRSTNAME).lastname(LASTNAME)
+                .email(EMAIL)
+                .sex(SEX).age(AGE)
+                .phone(PHONE).familyStatus(FAMILY_STATUS).town(TOWN)
+                .message("")
                 .build();
     }
 
