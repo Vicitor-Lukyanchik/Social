@@ -1,8 +1,11 @@
 package com.social.controller;
 
 import com.social.dto.InterestDto;
+import com.social.dto.InterestIndexDto;
+import com.social.entity.Interest;
 import com.social.service.InterestService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,7 +22,9 @@ public class InterestController {
 
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("interests", interestService.findAll());
+        InterestIndexDto interestIndexDto = InterestIndexDto.builder().build();
+        Page<Interest> all = interestService.findAll(interestIndexDto);
+        model.addAttribute("interests", all);
         return "interest/index";
     }
 

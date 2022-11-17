@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.social.Constants.*;
@@ -120,16 +119,6 @@ public class InterestServiceTest {
         interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
 
         assertTrue(interestService.isExist(INTEREST_NAME));
-    }
-
-    @Test
-    public void findByAllShouldReturnListInterests() {
-        Interest interest = interestRepository.save(dtoToInterestConverter.convert(createInterestDto()));
-        List<Interest> expected = Arrays.asList(interest);
-
-        List<Interest> actual = interestService.findAll();
-
-        assertEquals(expected.size(), actual.size());
     }
 
     @Test
