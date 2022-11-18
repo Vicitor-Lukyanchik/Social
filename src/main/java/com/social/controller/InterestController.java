@@ -1,7 +1,6 @@
 package com.social.controller;
 
 import com.social.dto.InterestDto;
-import com.social.dto.InterestIndexDto;
 import com.social.entity.Interest;
 import com.social.service.InterestService;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +24,18 @@ public class InterestController {
 
     @GetMapping
     public String index(Model model, @RequestParam("offset") Optional<Integer> offset,
-                        @RequestParam("pageSize") Optional<Integer> pageSize) {
-        Page<Interest> interestPages = interestService.findAll(InterestIndexDto.builder().offset(offset.orElse(0))
-                .pageSize(pageSize.orElse(pageSize.orElse(0))).build());
+                        @RequestParam("pageSize") Optional<Integer> pageSize,
+                        @RequestParam("isSort") Optional<Boolean> isSort) {
+        Page<Interest> interestPages = interestService.findAll(offset, pageSize, isSort.orElse(false));
+
         model.addAttribute("interestsPages", interestPages);
         model.addAttribute("interests", interestPages.getContent());
+        model.addAttribute("size", pageSize.orElse(5));
+
         if (interestPages.getTotalPages() > 0) {
             model.addAttribute("pageNumbers",
                     IntStream.rangeClosed(1, interestPages.getTotalPages()).boxed().collect(Collectors.toList()));
         }
-        model.addAttribute("size", 5);
         return "interest/index";
     }
 

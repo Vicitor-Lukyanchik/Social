@@ -1,9 +1,8 @@
 package com.social.service.impl;
 
-import com.social.converter.InterestToDtoConverter;
 import com.social.converter.DtoToInterestConverter;
+import com.social.converter.InterestToDtoConverter;
 import com.social.dto.InterestDto;
-import com.social.dto.InterestIndexDto;
 import com.social.entity.Interest;
 import com.social.repository.InterestRepository;
 import com.social.service.InterestService;
@@ -15,10 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
 import java.util.Optional;
-
-import static com.social.specification.InterestSpecifications.sortAsc;
 
 @Service
 @RequiredArgsConstructor
@@ -73,14 +69,11 @@ public class InterestServiceImpl implements InterestService {
     }
 
     @Override
-    public Page<Interest> findAll(InterestIndexDto interestIndexDto) {
-        if (interestIndexDto.getPageSize() == 0) {
-            interestIndexDto.setPageSize(5);
+    public Page<Interest> findAll(Optional<Integer> offset, Optional<Integer> pageSize, boolean isSort) {
+        if (isSort) {
+            return findAllWithPaginationAndSorting(offset.orElse(0), pageSize.orElse(5));
         }
-        if (interestIndexDto.isSort()) {
-            return findAllWithPaginationAndSorting(interestIndexDto.getOffset(), interestIndexDto.getPageSize());
-        }
-        return findAllWithPagination(interestIndexDto.getOffset(), interestIndexDto.getPageSize());
+        return findAllWithPagination(offset.orElse(0), pageSize.orElse(5));
     }
 
     private Page<Interest> findAllWithPagination(int offset, int pageSize) {

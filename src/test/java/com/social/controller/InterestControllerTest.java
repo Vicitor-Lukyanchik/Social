@@ -1,16 +1,25 @@
 package com.social.controller;
 
 import com.social.dto.InterestDto;
+import com.social.entity.Interest;
 import com.social.service.InterestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static com.social.Constants.ID;
+import static com.social.util.MockUtils.createInterest;
 import static com.social.util.MockUtils.createInterestDto;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
@@ -44,11 +53,19 @@ public class InterestControllerTest {
 
     @Test
     public void getInterests() throws Exception {
+        List<Interest> interests = Arrays.asList(createInterest());
+        given(interestService.findAll(isA(Optional.class), isA(Optional.class), isA(boolean.class)))
+                .willReturn(new PageImpl<>(interests, PageRequest.of(0, 5, Sort.by("name")), interests.size()));
+
         mockMvc.perform(get("/interests")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(model().size(1))
+                        .param("isSort", "on")
+                        .param("offset", "0")
+                        .param("pageSize", "5"))
+                .andExpect(model().size(4))
                 .andExpect(model().attributeExists("interests"))
+                .andExpect(model().attributeExists("interestsPages"))
+                .andExpect(model().attributeExists("size"))
+                .andExpect(model().attributeExists("pageNumbers"))
                 .andExpect(view().name("interest/index"))
                 .andExpect(status().isOk())
                 .andReturn();

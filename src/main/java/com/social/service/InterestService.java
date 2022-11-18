@@ -5,6 +5,8 @@ import com.social.dto.InterestIndexDto;
 import com.social.entity.Interest;
 import org.springframework.data.domain.Page;
 
+import java.util.Optional;
+
 public interface InterestService {
 
     InterestDto save(InterestDto interestDto);
@@ -13,7 +15,7 @@ public interface InterestService {
 
     InterestDto delete(Long id);
 
-    Page<Interest> findAll(InterestIndexDto interestIndexDto);
+    Page<Interest> findAll(Optional<Integer> offset, Optional<Integer> pageSize, boolean isSort);
 
     boolean isExist(String name);
 

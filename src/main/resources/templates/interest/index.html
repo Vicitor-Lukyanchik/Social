@@ -6,9 +6,15 @@
 </head>
 <body>
 
-    <label for="size">Page size : </label>
-    <input type="number" th:value="*{size}" name="size" id="size"/>
+<form th:action="@{/interests(pageSize=${pageSize}, isSort=${isSort})}">
+    <label for="pageSize">Page size : </label>
+    <input type="number" th:name="pageSize" id="pageSize"/>
+    <label for="isSort">Sort</label>
+    <input type="checkbox" name="isSort" th:checked="${isSort}" id="isSort"/>
+    <input type="submit"/>
     <br/>
+    <br/>
+</form>
 
 <table border="1">
     <thead>
@@ -26,11 +32,13 @@
 </table>
 
 <div th:if="${interestsPages.getTotalPages() > 0}"
-     th:each="pageNumber : ${pageNumbers}">
+     th:each="pageNumber : ${pageNumbers}"
+     style="box-sizing: border-box;display: inline-block;">
     <a th:href="@{/interests(pageSize=${size}, offset=${pageNumber} - 1)}"
        th:text="${pageNumber}"></a>
 </div>
 
+<br/><br/>
 <a href="/interests/new">Create new interest</a>
 
 </body>
