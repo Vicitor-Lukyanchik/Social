@@ -1,7 +1,9 @@
 package com.social.specification;
 
 import com.social.entity.Interest;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +14,8 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class InterestFindByNameSpecification implements Specification<Interest> {
 
     private String name = "";

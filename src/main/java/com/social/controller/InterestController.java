@@ -12,6 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -20,11 +23,20 @@ public class InterestController {
 
     private final InterestService interestService;
 
-    @GetMapping()
-    public String index(Model model) {
-        InterestIndexDto interestIndexDto = InterestIndexDto.builder().build();
-        Page<Interest> all = interestService.findAll(interestIndexDto);
-        model.addAttribute("interests", all);
+    @GetMapping
+    public String index(Model model, @RequestParam("offset") Optional<Integer> offset,
+                        @RequestParam("pageSize") Optional<Integer> pageSize, @ModelAttribute("size") String size) {
+        if (!size.equals("")) {
+            pageSize = Optional.of(Integer.valueOf(size));
+        }
+        Page<Interest> interestPages = interestService.findAll(InterestIndexDto.builder().offset(offset.orElse(0))
+                .pageSize(pageSize.orElse(pageSize.orElse(0))).build());
+        model.addAttribute("interestsPages", interestPages);
+        model.addAttribute("interests", interestPages.getContent());
+        if (interestPages.getTotalPages() > 0) {
+            model.addAttribute("pageNumbers",
+                    IntStream.rangeClosed(1, interestPages.getTotalPages()).boxed().collect(Collectors.toList()));
+        }
         return "interest/index";
     }
 

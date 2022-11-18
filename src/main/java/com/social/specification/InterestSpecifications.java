@@ -14,7 +14,7 @@ public class InterestSpecifications {
     }
 
     public static Specification<Interest> findByName(String name) {
-        return InterestFindByNameSpecification.builder().name(name).build();
+        return new InterestFindByNameSpecification(name);
     }
 
 }

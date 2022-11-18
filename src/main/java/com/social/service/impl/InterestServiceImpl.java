@@ -74,17 +74,20 @@ public class InterestServiceImpl implements InterestService {
 
     @Override
     public Page<Interest> findAll(InterestIndexDto interestIndexDto) {
+        if (interestIndexDto.getPageSize() == 0) {
+            interestIndexDto.setPageSize(5);
+        }
         if (interestIndexDto.isSort()) {
             return findAllWithPaginationAndSorting(interestIndexDto.getOffset(), interestIndexDto.getPageSize());
         }
         return findAllWithPagination(interestIndexDto.getOffset(), interestIndexDto.getPageSize());
     }
 
-    private Page<Interest> findAllWithPagination(int offset, int pageSize){
+    private Page<Interest> findAllWithPagination(int offset, int pageSize) {
         return interestRepository.findAll(PageRequest.of(offset, pageSize));
     }
 
-    private Page<Interest> findAllWithPaginationAndSorting(int offset, int pageSize){
+    private Page<Interest> findAllWithPaginationAndSorting(int offset, int pageSize) {
         return interestRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name")));
     }
 

@@ -6,13 +6,33 @@
 </head>
 <body>
 
-<div th:each="interest : ${interests}">
-    <a th:href="@{/interests/{id}(id=${interest.getId()})}"
-       th:text="${interest.getName()}">interest</a>
-</div>
+<form th:method="GET" th:action="@{/interests}">
+    <label for="size">Page size : </label>
+    <input type="text" th:field="*{size}" id="size"/>
+    <br/>
+    <input type="submit" value="get"/>
+</form>
 
-<br/>
-<hr/>
+<table border="1">
+    <thead>
+    <tr>
+        <th th:text="id"/>
+        <th th:text="name"/>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="interest : ${interests}">
+        <td th:text="${interest.getId()}"/>
+        <td th:text="${interest.getName()}"/>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${interestsPages.getTotalPages() > 0}"
+     th:each="pageNumber : ${pageNumbers}">
+    <a th:href="@{/interests(pageSize=${size}, offset=${pageNumber} - 1)}"
+       th:text="${pageNumber}"></a>
+</div>
 
 <a href="/interests/new">Create new interest</a>
 
