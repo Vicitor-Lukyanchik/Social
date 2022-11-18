@@ -25,10 +25,7 @@ public class InterestController {
 
     @GetMapping
     public String index(Model model, @RequestParam("offset") Optional<Integer> offset,
-                        @RequestParam("pageSize") Optional<Integer> pageSize, @ModelAttribute("size") String size) {
-        if (!size.equals("")) {
-            pageSize = Optional.of(Integer.valueOf(size));
-        }
+                        @RequestParam("pageSize") Optional<Integer> pageSize) {
         Page<Interest> interestPages = interestService.findAll(InterestIndexDto.builder().offset(offset.orElse(0))
                 .pageSize(pageSize.orElse(pageSize.orElse(0))).build());
         model.addAttribute("interestsPages", interestPages);
@@ -37,6 +34,7 @@ public class InterestController {
             model.addAttribute("pageNumbers",
                     IntStream.rangeClosed(1, interestPages.getTotalPages()).boxed().collect(Collectors.toList()));
         }
+        model.addAttribute("size", 5);
         return "interest/index";
     }
 

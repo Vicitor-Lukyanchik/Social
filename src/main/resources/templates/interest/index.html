@@ -6,12 +6,9 @@
 </head>
 <body>
 
-<form th:method="GET" th:action="@{/interests}">
     <label for="size">Page size : </label>
-    <input type="text" th:field="*{size}" id="size"/>
+    <input type="number" th:value="*{size}" name="size" id="size"/>
     <br/>
-    <input type="submit" value="get"/>
-</form>
 
 <table border="1">
     <thead>
