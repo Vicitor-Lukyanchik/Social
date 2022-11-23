@@ -4,20 +4,30 @@
     <meta charset="UTF-8">
     <title>Index</title>
 </head>
-<body>
 
+<body>
 <form th:action="@{/interests(pageSize=${pageSize}, isSort=${isSort})}">
+    <label for="name">name : </label>
+    <input type="text" th:name="name" id="name"/><br/>
     <label for="pageSize">Page size : </label>
-    <input type="number" th:name="pageSize" id="pageSize"/>
-    <label for="isSort">Sort</label>
-    <input type="checkbox" name="isSort" th:checked="${isSort}" id="isSort"/>
-    <input type="submit"/>
+    <input type="number" th:name="pageSize" id="pageSize"/><br/>
+    <input type="submit"/><br/><br/>
+    <label for="isIdDesc">Id desc</label>
+    <input type="checkbox" name="isIdDesc" th:checked="${isIdDesc}" id="isIdDesc"/><br/>
+    <label for="isNameDesc">Name desc</label>
+    <input type="checkbox" name="isNameDesc" th:checked="${isNameDesc}" id="isNameDesc"/><br/>
     <br/>
-    <br/>
-</form>
 
 <table border="1">
     <thead>
+    <tr>
+        <th>
+            <input type="checkbox" name="isId" th:checked="${isId}" id="isId"/>
+        </th>
+        <th>
+            <input type="checkbox" name="isName" th:checked="${isName}" id="isName"/>
+        </th>
+    </tr>
     <tr>
         <th th:text="id"/>
         <th th:text="name"/>
@@ -41,5 +51,6 @@
 <br/><br/>
 <a href="/interests/new">Create new interest</a>
 
+</form>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.social.controller;
 
+import com.social.dto.IndexDto;
 import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.service.InterestService;
@@ -54,7 +55,7 @@ public class InterestControllerTest {
     @Test
     public void getInterests() throws Exception {
         List<Interest> interests = Arrays.asList(createInterest());
-        given(interestService.findAll(isA(Optional.class), isA(Optional.class), isA(boolean.class)))
+        given(interestService.findAll(isA(IndexDto.class)))
                 .willReturn(new PageImpl<>(interests, PageRequest.of(0, 5, Sort.by("name")), interests.size()));
 
         mockMvc.perform(get("/interests")

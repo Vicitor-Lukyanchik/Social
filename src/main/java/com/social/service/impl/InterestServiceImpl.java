@@ -2,19 +2,22 @@ package com.social.service.impl;
 
 import com.social.converter.DtoToInterestConverter;
 import com.social.converter.InterestToDtoConverter;
+import com.social.dto.IndexDto;
 import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.repository.InterestRepository;
 import com.social.service.InterestService;
-import com.social.specification.InterestSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Map;
 import java.util.Optional;
+
+import static com.social.specification.InterestSpecifications.findByNameWithSortByParameters;
+import static com.social.specification.InterestSpecifications.findWithSortByParameters;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,8 @@ public class InterestServiceImpl implements InterestService {
     private final InterestRepository interestRepository;
     private final InterestToDtoConverter toDtoConverter;
     private final DtoToInterestConverter dtoToInterestConverter;
+
+    private int pageSize = 5;
 
     @Override
     public InterestDto save(InterestDto interestDto) {
@@ -69,19 +74,22 @@ public class InterestServiceImpl implements InterestService {
     }
 
     @Override
-    public Page<Interest> findAll(Optional<Integer> offset, Optional<Integer> pageSize, boolean isSort) {
-        if (isSort) {
-            return findAllWithPaginationAndSorting(offset.orElse(0), pageSize.orElse(5));
+    public Page<Interest> findAll(IndexDto indexDto) {
+        if (indexDto.getPageSize() != 0) {
+            pageSize = indexDto.getPageSize();
         }
-        return findAllWithPagination(offset.orElse(0), pageSize.orElse(5));
+        if (indexDto.getName().isEmpty()) {
+            return findAllWithPaginationAndSorting(indexDto.getOffset(), indexDto.getSortParameters());
+        }
+        return findAllWithPaginationAndSortingAndSearch(indexDto.getOffset(), indexDto.getSortParameters(), indexDto.getName());
     }
 
-    private Page<Interest> findAllWithPagination(int offset, int pageSize) {
-        return interestRepository.findAll(PageRequest.of(offset, pageSize));
+    private Page<Interest> findAllWithPaginationAndSorting(int offset, Map<String, Boolean> parameters) {
+        return interestRepository.findAll(findWithSortByParameters(parameters), PageRequest.of(offset, pageSize));
     }
 
-    private Page<Interest> findAllWithPaginationAndSorting(int offset, int pageSize) {
-        return interestRepository.findAll(PageRequest.of(offset, pageSize, Sort.by("name")));
+    private Page<Interest> findAllWithPaginationAndSortingAndSearch(int offset, Map<String, Boolean> parameters, String name) {
+        return interestRepository.findAll(findByNameWithSortByParameters(name, parameters), PageRequest.of(offset, pageSize));
     }
 
     @Override
@@ -96,10 +104,5 @@ public class InterestServiceImpl implements InterestService {
             return InterestDto.builder().message("Interest haven't been founded by id : " + id).build();
         }
         return toDtoConverter.convert(interest.get());
-    }
-
-    @Override
-    public InterestDto findByName(String name) {
-        return toDtoConverter.convert(interestRepository.findAll(InterestSpecifications.findByName(name)).get(0));
     }
 }

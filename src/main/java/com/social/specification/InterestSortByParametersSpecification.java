@@ -2,8 +2,6 @@ package com.social.specification;
 
 import com.social.entity.Interest;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -13,22 +11,24 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+@Component
 @AllArgsConstructor
-@NoArgsConstructor
-public class InterestFindByNameSpecification implements Specification<Interest> {
+public class InterestSortByParametersSpecification implements Specification<Interest> {
 
-    private String name = "";
+    private Map<String, Boolean> parameters;
 
     @Override
     public Predicate toPredicate(Root<Interest> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-        List<Predicate> predicates = new ArrayList<>();
-
-        if (name.equals("")) {
-            predicates.add(criteriaBuilder.equal(root.get("name"), name));
+        for (Map.Entry<String, Boolean> parameter : parameters.entrySet()) {
+            if (parameter.getValue()) {
+                query.orderBy(criteriaBuilder.desc(root.get(parameter.getKey())));
+            } else {
+                query.orderBy(criteriaBuilder.asc(root.get(parameter.getKey())));
+            }
         }
-        query.where(predicates.toArray(new Predicate[0]));
-
-        return predicates.get(0);
+        List<Predicate> predicates = new ArrayList<>();
+        return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
     }
 }

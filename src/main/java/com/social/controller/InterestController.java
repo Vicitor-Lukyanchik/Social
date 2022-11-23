@@ -1,5 +1,7 @@
 package com.social.controller;
 
+import com.social.converter.SortParametersConverter;
+import com.social.dto.IndexDto;
 import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.service.InterestService;
@@ -11,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -21,12 +24,22 @@ import java.util.stream.IntStream;
 public class InterestController {
 
     private final InterestService interestService;
+    private final SortParametersConverter sortConverter;
 
     @GetMapping
     public String index(Model model, @RequestParam("offset") Optional<Integer> offset,
                         @RequestParam("pageSize") Optional<Integer> pageSize,
-                        @RequestParam("isSort") Optional<Boolean> isSort) {
-        Page<Interest> interestPages = interestService.findAll(offset, pageSize, isSort.orElse(false));
+                        @RequestParam("isId") Optional<Boolean> isId,
+                        @RequestParam("isIdDesc") Optional<Boolean> isIdDesc,
+                        @RequestParam("isName") Optional<Boolean> isName,
+                        @RequestParam("isNameDesc") Optional<Boolean> isNameDesc,
+                        @RequestParam("name") Optional<String> name) {
+        Page<Interest> interestPages = interestService.findAll(IndexDto.builder()
+                .offset(offset.orElse(0))
+                .name(name.orElse(""))
+                .pageSize(pageSize.orElse(0))
+                .sortParameters(sortConverter.buildInterestSortParameters(isId, isIdDesc, isName, isNameDesc))
+                .build());
 
         model.addAttribute("interestsPages", interestPages);
         model.addAttribute("interests", interestPages.getContent());

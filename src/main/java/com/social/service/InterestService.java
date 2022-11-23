@@ -1,7 +1,7 @@
 package com.social.service;
 
+import com.social.dto.IndexDto;
 import com.social.dto.InterestDto;
-import com.social.dto.InterestIndexDto;
 import com.social.entity.Interest;
 import org.springframework.data.domain.Page;
 
@@ -15,11 +15,9 @@ public interface InterestService {
 
     InterestDto delete(Long id);
 
-    Page<Interest> findAll(Optional<Integer> offset, Optional<Integer> pageSize, boolean isSort);
+    Page<Interest> findAll(IndexDto indexDto);
 
     boolean isExist(String name);
 
     InterestDto findById(Long id);
-
-    InterestDto findByName(String name);
 }
