@@ -41,7 +41,7 @@ public class InterestControllerTest {
 
     @Test
     public void getInterestById() throws Exception {
-        given(interestService.findById(isA(Long.class))).willReturn(createInterestDto());
+        given(interestService.findById(isA(Long.class))).willReturn(Optional.of(createInterestDto()));
         mockMvc.perform(get("/interests/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -98,7 +98,7 @@ public class InterestControllerTest {
 
     @Test
     public void getEditInterest() throws Exception {
-        given(interestService.findById(isA(Long.class))).willReturn(createInterestDto());
+        given(interestService.findById(isA(Long.class))).willReturn(Optional.of(createInterestDto()));
         mockMvc.perform(get("/interests/{id}/edit", ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

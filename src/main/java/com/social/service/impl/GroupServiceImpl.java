@@ -37,8 +37,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean isExist(Long id) {
-        return groupRepository.findById(id).isPresent();
+    public boolean isPresent(Long id) {
+        return groupRepository.existsById(id);
     }
 
     @Override

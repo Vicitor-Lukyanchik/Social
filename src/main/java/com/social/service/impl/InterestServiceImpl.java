@@ -8,6 +8,7 @@ import com.social.entity.Interest;
 import com.social.repository.InterestRepository;
 import com.social.service.InterestService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import static com.social.specification.InterestSpecifications.findWithSortByPara
 @Service
 @RequiredArgsConstructor
 @Validated
+@Log4j2
 public class InterestServiceImpl implements InterestService {
 
     private final InterestRepository interestRepository;
@@ -70,7 +72,7 @@ public class InterestServiceImpl implements InterestService {
     }
 
     private boolean isPresent(Long id) {
-        return interestRepository.findById(id).isPresent();
+        return interestRepository.existsById(id);
     }
 
     @Override
@@ -98,11 +100,12 @@ public class InterestServiceImpl implements InterestService {
     }
 
     @Override
-    public InterestDto findById(Long id) {
+    public Optional<InterestDto> findById(Long id) {
         Optional<Interest> interest = interestRepository.findById(id);
         if (interest.isEmpty()) {
-            return InterestDto.builder().message("Interest haven't been founded by id : " + id).build();
+            log.warn("Interest haven't been founded by id : " + id);
+            return Optional.empty();
         }
-        return toDtoConverter.convert(interest.get());
+        return Optional.of(toDtoConverter.convert(interest.get()));
     }
 }

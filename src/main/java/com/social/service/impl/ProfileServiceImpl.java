@@ -10,6 +10,7 @@ import com.social.service.GroupService;
 import com.social.service.ProfileService;
 import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Validated
+@Log4j2
 public class ProfileServiceImpl implements ProfileService {
 
     private static final String NOT_SPECIFIED = "Undefined";
@@ -73,8 +75,8 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public void createChat(Long profileId, Long anotherProfileId, String chatName) throws ServiceException {
         checkProfiles(profileId, anotherProfileId);
-        Profile profile = dtoToProfileConverter.convert(findById(profileId));
-        Profile anotherProfile = dtoToProfileConverter.convert(findById(anotherProfileId));
+        Profile profile = dtoToProfileConverter.convert(findById(profileId).get());
+        Profile anotherProfile = dtoToProfileConverter.convert(findById(anotherProfileId).get());
         chatName = createChatName(profile, anotherProfile, chatName);
         chatService.save(Chat.builder().name(chatName).profiles(Arrays.asList(profile, anotherProfile)).build());
     }
@@ -94,7 +96,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public void joinInGroup(Long profileId, Long groupId) throws ServiceException {
         isPresent(profileId);
-        if (!groupService.isExist(groupId)) {
+        if (!groupService.isPresent(groupId)) {
             throw new ServiceException("Group haven't been founded by id : " + groupId);
         }
         Profile profile = profileRepository.findById(profileId).get();
@@ -105,7 +107,7 @@ public class ProfileServiceImpl implements ProfileService {
 
 
     private boolean isPresent(Long id) {
-        return profileRepository.findById(id).isPresent();
+        return profileRepository.existsById(id);
     }
 
     @Override
@@ -118,11 +120,12 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public ProfileDto findById(Long id) {
+    public Optional<ProfileDto> findById(Long id) {
         Optional<Profile> result = profileRepository.findById(id);
         if (!result.isPresent()) {
-            return ProfileDto.builder().message("Profile haven't been founded by id : " + id).build();
+            log.warn("Profile haven't been founded by id : " + id);
+            return Optional.empty();
         }
-        return profileToDtoConverter.convert(result.get());
+        return Optional.of(profileToDtoConverter.convert(result.get()));
     }
 }

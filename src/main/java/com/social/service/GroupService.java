@@ -9,7 +9,7 @@ public interface GroupService {
 
     Group save(Group group, Profile profile, Interest interest) throws ServiceException;
 
-    boolean isExist(Long id);
+    boolean isPresent(Long id);
 
     Group findById(Long id) throws ServiceException;
 }

@@ -54,12 +54,12 @@ public class InterestController {
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("interest", interestService.findById(id));
+        model.addAttribute("interest", interestService.findById(id).get());
         return "interest/show";
     }
 
     @GetMapping("/new")
-    public String newPerson(Model model) {
+    public String newInterest(Model model) {
         model.addAttribute("interest", InterestDto.builder().message("").build());
         return "interest/new";
     }
@@ -78,7 +78,7 @@ public class InterestController {
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("interest", interestService.findById(id));
+        model.addAttribute("interest", interestService.findById(id).get());
         return "interest/edit";
     }
 

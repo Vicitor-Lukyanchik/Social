@@ -19,5 +19,5 @@ public interface InterestService {
 
     boolean isExist(String name);
 
-    InterestDto findById(Long id);
+    Optional<InterestDto> findById(Long id);
 }

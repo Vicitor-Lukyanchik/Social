@@ -48,7 +48,7 @@ public class PostServiceImpl implements PostService {
     }
 
     private void isGroupExist(Long id) throws ServiceException {
-        if (!groupService.isExist(id)) {
+        if (!groupService.isPresent(id)) {
             throw new ServiceException("Group haven't been founded by id " + id);
         }
     }
@@ -84,12 +84,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public boolean isExist(Post post) {
-        try {
-            findById(post.getId());
-            return true;
-        } catch (ServiceException e) {
-            return false;
-        }
+        return postRepository.existsById(post.getId());
     }
 
     @Override

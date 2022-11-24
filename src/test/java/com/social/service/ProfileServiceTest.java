@@ -2,7 +2,6 @@ package com.social.service;
 
 import com.social.converter.ProfileToDtoConverter;
 import com.social.dto.ProfileDto;
-import com.social.dto.UserDto;
 import com.social.entity.Chat;
 import com.social.entity.Group;
 import com.social.entity.Profile;
@@ -261,7 +260,7 @@ public class ProfileServiceTest {
         Profile profile = profileRepository.save(createProfile(user));
         Group group = createGroup(profile);
 
-        given(groupService.isExist(isA(Long.class))).willReturn(false);
+        given(groupService.isPresent(isA(Long.class))).willReturn(false);
 
         assertThrows(ServiceException.class, () -> profileService.joinInGroup(profile.getId(), group.getId()));
     }
@@ -273,11 +272,11 @@ public class ProfileServiceTest {
         Group group = createGroup(profile);
         group.setId(ID);
 
-        given(groupService.isExist(isA(Long.class))).willReturn(true);
+        given(groupService.isPresent(isA(Long.class))).willReturn(true);
 
         profileService.joinInGroup(profile.getId(), group.getId());
 
-        verify(groupService, Mockito.times(1)).isExist(ID);
+        verify(groupService, Mockito.times(1)).isPresent(ID);
     }
 
     @Test

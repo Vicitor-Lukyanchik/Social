@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
+import java.util.Optional;
 
 import static com.social.Constants.*;
 import static com.social.util.MockUtils.createInterestDto;
@@ -122,23 +123,13 @@ public class InterestServiceTest {
     }
 
     @Test
-    public void findByIdShouldThrowExceptionWhenInterestNotFound() {
-        InterestDto expected = InterestDto.builder()
-                .message("Interest haven't been founded by id : " + ID).build();
-
-        InterestDto actual = interestService.findById(ID);
-
-        assertEquals(expected.getMessage(), actual.getMessage());
-    }
-
-    @Test
     public void findByIdShouldReturnInterest() {
         InterestDto expected = interestToDtoConverter
                 .convert(interestRepository.save(dtoToInterestConverter.convert(createInterestDto())));
 
-        InterestDto actual = interestService.findById(expected.getId());
+        Optional<InterestDto> actual = interestService.findById(expected.getId());
 
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getName(), actual.get().getName());
+        assertEquals(expected.getId(), actual.get().getId());
     }
 }

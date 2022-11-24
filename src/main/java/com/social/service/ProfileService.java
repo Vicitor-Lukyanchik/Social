@@ -5,6 +5,7 @@ import com.social.entity.*;
 import com.social.exception.ServiceException;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 public interface ProfileService {
 
@@ -18,5 +19,5 @@ public interface ProfileService {
 
     ProfileDto findByUserId(Long userId);
 
-    ProfileDto findById(Long id);
+    Optional<ProfileDto> findById(Long id);
 }
