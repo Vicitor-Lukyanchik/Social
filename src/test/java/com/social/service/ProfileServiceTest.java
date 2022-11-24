@@ -18,10 +18,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import javax.validation.ConstraintViolationException;
 
+import java.util.Optional;
+
 import static com.social.Constants.*;
 import static com.social.util.MockUtils.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -306,9 +307,9 @@ public class ProfileServiceTest {
     public void findByIdShouldThrowExceptionWhenProfileNotFound() {
         ProfileDto expected = ProfileDto.builder().message("Profile haven't been founded by id : " + ID).build();
 
-        ProfileDto actual = profileService.findById(ID);
+        Optional<ProfileDto> actual = profileService.findById(ID);
 
-        assertEquals(expected.getMessage(), actual.getMessage());
+        assertTrue(actual.isEmpty());
     }
 
     @Test
@@ -316,7 +317,7 @@ public class ProfileServiceTest {
         User user = userRepository.save(createUser());
         ProfileDto expected = profileToDtoConverter.convert(profileRepository.save(createProfile(user)));
 
-        ProfileDto actual = profileService.findById(expected.getId());
+        ProfileDto actual = profileService.findById(expected.getId()).get();
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getFirstname(), actual.getFirstname());

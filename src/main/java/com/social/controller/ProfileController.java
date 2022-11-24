@@ -19,13 +19,13 @@ public class ProfileController {
 
     @GetMapping("/{id}")
     public String get(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("profile", profileService.findById(id));
+        model.addAttribute("profile", profileService.findById(id).get());
         return "profile/index";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("profile", profileService.findById(id));
+        model.addAttribute("profile", profileService.findById(id).get());
         return "profile/edit";
     }
 

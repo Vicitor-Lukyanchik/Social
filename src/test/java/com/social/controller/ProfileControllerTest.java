@@ -10,6 +10,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
+
 import static com.social.Constants.ID;
 import static com.social.util.MockUtils.createProfileDto;
 import static org.mockito.ArgumentMatchers.isA;
@@ -30,7 +32,7 @@ public class ProfileControllerTest {
 
     @Test
     public void getProfileById() throws Exception {
-        given(profileService.findById(isA(Long.class))).willReturn(createProfileDto());
+        given(profileService.findById(isA(Long.class))).willReturn(Optional.of(createProfileDto()));
         mockMvc.perform(get("/profiles/{id}", ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -43,7 +45,7 @@ public class ProfileControllerTest {
 
     @Test
     public void getEditProfile() throws Exception {
-        given(profileService.findById(isA(Long.class))).willReturn(createProfileDto());
+        given(profileService.findById(isA(Long.class))).willReturn(Optional.of(createProfileDto()));
         mockMvc.perform(get("/profiles/{id}/edit", ID)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
