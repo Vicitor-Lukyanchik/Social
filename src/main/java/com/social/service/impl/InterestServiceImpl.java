@@ -1,76 +1,111 @@
 package com.social.service.impl;
 
+import com.social.converter.DtoToInterestConverter;
+import com.social.converter.InterestToDtoConverter;
+import com.social.dto.IndexDto;
+import com.social.dto.InterestDto;
 import com.social.entity.Interest;
 import com.social.repository.InterestRepository;
 import com.social.service.InterestService;
-import com.social.service.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.social.specification.InterestSpecifications.findByNameWithSortByParameters;
+import static com.social.specification.InterestSpecifications.findWithSortByParameters;
 
 @Service
 @RequiredArgsConstructor
 @Validated
+@Log4j2
 public class InterestServiceImpl implements InterestService {
 
     private final InterestRepository interestRepository;
+    private final InterestToDtoConverter toDtoConverter;
+    private final DtoToInterestConverter dtoToInterestConverter;
+
+    private int pageSize = 5;
 
     @Override
-    @Transactional
-    public Interest save(@Valid Interest interest) {
-        if (isExist(interest.getName())){
-            throw new ServiceException("Interest have been created with name " + interest.getName());
+    public InterestDto save(InterestDto interestDto) {
+        if (isExist(interestDto.getName())) {
+            return InterestDto.builder()
+                    .message("Interest have been created with name " + interestDto.getName())
+                    .build();
         }
-        Interest result = interestRepository.save(interest);
-        return result;
+        Interest result = interestRepository.save(dtoToInterestConverter.convert(interestDto));
+        return toDtoConverter.convert(result);
     }
 
     @Override
-    @Transactional
-    public Interest update(@Valid Interest interest) {
-        findById(interest.getId());
-        if (isExist(interest.getName())){
-            throw new ServiceException("Interest have been created with name " + interest.getName());
+    public InterestDto update(Long id, InterestDto updatedInterestDto) {
+        if (!isPresent(id)) {
+            return InterestDto.builder()
+                    .message("Interest haven't been founded by id : " + id)
+                    .build();
         }
-        return interestRepository.save(interest);
+        if (isExist(updatedInterestDto.getName())) {
+            return InterestDto.builder()
+                    .message("Interest have been founded with name " + updatedInterestDto.getName())
+                    .build();
+        }
+        Interest interest = interestRepository.findById(id).get();
+        interest.setName(updatedInterestDto.getName());
+        return toDtoConverter.convert(interestRepository.save(interest));
     }
 
     @Override
-    @Transactional
-    public void delete(Interest interest) {
-        findById(interest.getId());
-        interestRepository.delete(interest);
+    public InterestDto delete(Long id) {
+        if (!isPresent(id)) {
+            return InterestDto.builder()
+                    .message("Interest haven't been founded by id : " + id)
+                    .build();
+        }
+        interestRepository.deleteById(id);
+        return InterestDto.builder().build();
+    }
+
+    private boolean isPresent(Long id) {
+        return interestRepository.existsById(id);
     }
 
     @Override
-    @Transactional
-    public List<Interest> findAll() {
-        return interestRepository.findAll();
+    public Page<Interest> findAll(IndexDto indexDto) {
+        if (indexDto.getPageSize() != 0) {
+            pageSize = indexDto.getPageSize();
+        }
+        if (indexDto.getName().isEmpty()) {
+            return findAllWithPaginationAndSorting(indexDto.getOffset(), indexDto.getSortParameters());
+        }
+        return findAllWithPaginationAndSortingAndSearch(indexDto.getOffset(), indexDto.getSortParameters(), indexDto.getName());
+    }
+
+    private Page<Interest> findAllWithPaginationAndSorting(int offset, Map<String, Boolean> parameters) {
+        return interestRepository.findAll(findWithSortByParameters(parameters), PageRequest.of(offset, pageSize));
+    }
+
+    private Page<Interest> findAllWithPaginationAndSortingAndSearch(int offset, Map<String, Boolean> parameters, String name) {
+        return interestRepository.findAll(findByNameWithSortByParameters(name, parameters), PageRequest.of(offset, pageSize));
     }
 
     @Override
-    @Transactional
     public boolean isExist(String name) {
-        Optional<Interest> interest = interestRepository.findByName(name);
-        if (interest.isEmpty()) {
-            return false;
-        }
-        return true;
+        return interestRepository.findByName(name).isPresent();
     }
 
     @Override
-    @Transactional
-    public Interest findById(Long id) {
+    public Optional<InterestDto> findById(Long id) {
         Optional<Interest> interest = interestRepository.findById(id);
-
         if (interest.isEmpty()) {
-            throw new ServiceException("Interest haven't been founded by id : " + id);
+            log.warn("Interest haven't been founded by id : " + id);
+            return Optional.empty();
         }
-        return interest.get();
+        return Optional.of(toDtoConverter.convert(interest.get()));
     }
 }

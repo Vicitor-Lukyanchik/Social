@@ -5,10 +5,12 @@
     <title>Update</title>
 </head>
 <body>
+<div class="error" th:text="${interest.getMessage()}"></div>
 
-<form th:method="POST" th:action="@{/interest/{id}(id=${interest.getId()})}" th:object="${interest}">
+<form th:method="POST" th:action="@{/interests/{id}(id=${interest.getId()})}" th:object="${interest}">
     <label for="name">Enter name: </label>
     <input type="text" th:field="*{name}" id="name"/>
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     <br/>
     <input type="submit" value="update"/>
 </form>

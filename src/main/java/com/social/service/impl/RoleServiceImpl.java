@@ -1,11 +1,9 @@
 package com.social.service.impl;
 
 import com.social.entity.Role;
-import com.social.entity.User;
 import com.social.repository.RoleRepository;
 import com.social.service.RoleService;
-import com.social.service.exception.ServiceException;
-import com.social.service.exception.UserNotFoundException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -21,11 +19,6 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<Role> findByName(String name) {
-        List<Role> result = roleRepository.findByName(name);
-
-        if (result.isEmpty()) {
-            throw new ServiceException("Role haven't founded by name : " + name);
-        }
-        return result;
+        return roleRepository.findByName(name);
     }
 }

@@ -2,14 +2,15 @@ package com.social.service.impl;
 
 import com.social.entity.*;
 import com.social.repository.PostRepository;
-import com.social.service.*;
-import com.social.service.exception.ServiceException;
+import com.social.service.ChatService;
+import com.social.service.GroupService;
+import com.social.service.MessageService;
+import com.social.service.PostService;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -26,37 +27,34 @@ public class PostServiceImpl implements PostService {
     private final MessageService messageService;
 
     @Override
-    @Transactional
-    public Post save(@Valid Post post, Group group) {
-        isGroupExist(group);
-        return buildPost(post, group);
+    public Post save(Post post, Long groupId) throws ServiceException {
+        isGroupExist(groupId);
+        return buildPost(post, groupService.findById(groupId));
     }
 
     private Post buildPost(Post post, Group group) {
         post.setGroup(group);
-        Chat chat = chatService.save(new Chat(post.getTitle(), group.getJoinProfiles()));
+        Chat chat = chatService.save(Chat.builder().name(post.getTitle())
+                .profiles(group.getJoinProfiles()).build());
         post.setChat(chat);
-        Post result = postRepository.save(post);
-        return result;
+        return postRepository.save(post);
     }
 
     @Override
-    @Transactional
-    public List<Post> findAllByGroup(Group group) {
-        isGroupExist(group);
-        List<Post> posts = postRepository.findAllByGroup(group);
+    public List<Post> findAllByGroupId(Long groupId) throws ServiceException {
+        isGroupExist(groupId);
+        List<Post> posts = postRepository.findAllByGroup(groupService.findById(groupId));
         return posts.stream().sorted(Comparator.comparing(Post::getDateTime)).collect(Collectors.toList());
     }
 
-    private void isGroupExist(Group group) {
-        if (!groupService.isExist(group)) {
-            throw new ServiceException("Group haven't been founded by id " + group.getId());
+    private void isGroupExist(Long id) throws ServiceException {
+        if (!groupService.isPresent(id)) {
+            throw new ServiceException("Group haven't been founded by id " + id);
         }
     }
 
     @Override
-    @Transactional
-    public void sendPostMessage(Profile profile, Post post, @Valid Message message) {
+    public void sendPostMessage(Profile profile, Post post, Message message) throws ServiceException {
         if (!isExist(post)) {
             throw new ServiceException("Post haven't been founded by id : " + post.getId());
         }
@@ -66,8 +64,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
-    public List<Message> findMessagesByPost(Post post) {
+    public List<Message> findMessagesByPost(Post post) throws ServiceException {
         if (!isExist(post)) {
             throw new ServiceException("Post haven't been founded by id : " + post.getId());
         }
@@ -75,7 +72,7 @@ public class PostServiceImpl implements PostService {
         return messageService.findAllByChat(post.getChat());
     }
 
-    private void isInGroup(Profile profile, Group group) {
+    private void isInGroup(Profile profile, Group group) throws ServiceException {
         Optional<Profile> result = group.getJoinProfiles().stream()
                 .filter(p -> profile.getId().equals(p.getId())).findFirst();
 
@@ -86,24 +83,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
     public boolean isExist(Post post) {
-        try {
-            findById(post.getId());
-            return true;
-        } catch (ServiceException e) {
-            return false;
-        }
+        return postRepository.existsById(post.getId());
     }
 
     @Override
-    @Transactional
-    public Post findById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
-
-        if (post.isEmpty()) {
-            throw new ServiceException("Post haven't been founded by id : " + id);
-        }
-        return post.get();
+    public Post findById(Long id) throws ServiceException {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Post haven't been founded by id : " + id));
     }
 }

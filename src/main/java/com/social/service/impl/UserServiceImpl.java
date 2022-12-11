@@ -1,16 +1,24 @@
 package com.social.service.impl;
 
+import com.social.converter.RegistrationRequestToProfileConverter;
+import com.social.converter.RegistrationRequestToUserConverter;
+import com.social.converter.UserToDtoConverter;
+import com.social.dto.UserDto;
+import com.social.dto.authentication.AuthenticationRequestDto;
+import com.social.dto.authentication.RegistrationRequestDto;
 import com.social.entity.Profile;
 import com.social.entity.Role;
 import com.social.entity.Status;
 import com.social.entity.User;
 import com.social.repository.UserRepository;
+import com.social.jwt.JwtTokenProvider;
 import com.social.service.ProfileService;
 import com.social.service.RoleService;
 import com.social.service.UserService;
-import com.social.service.exception.ServiceException;
-import com.social.service.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,18 +39,49 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final BCryptPasswordEncoder passwordEncoder;
     private final ProfileService profileService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RegistrationRequestToUserConverter requestToUserConverter;
+    private final RegistrationRequestToProfileConverter requestToProfileConverter;
+    private final UserToDtoConverter userToDtoConverter;
 
     @Override
     @Transactional
-    public User register(@Valid User user, @Valid Profile profile) {
+    public UserDto login(AuthenticationRequestDto requestDto) {
+            String username = requestDto.getUsername();
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
+        } catch (AuthenticationException e) {
+            return UserDto.builder().message("Invalid password").build();
+        }
+        UserDto userDto = findByUsername(username);
+            jwtTokenProvider.createToken(username, userDto.getRoles());
+            return userDto;
+    }
+
+    @Override
+    @Transactional
+    public UserDto register(RegistrationRequestDto requestDto) {
+        if (!requestDto.getPassword().equals(requestDto.getRepeatedPassword())) {
+            return UserDto.builder().message("Password should repeat correct").build();
+        }
+            UserDto registeredUser = registerUser(requestToUserConverter.convert(requestDto),
+                    requestToProfileConverter.convert(requestDto));
+            jwtTokenProvider.createToken(registeredUser.getUsername(), registeredUser.getRoles());
+            return registeredUser;
+    }
+
+    @Override
+    @Transactional
+    public UserDto registerUser(@Valid User user, @Valid Profile profile) {
         if (isUsernameUsed(user.getUsername())) {
-            throw new ServiceException("Username is already exists");
+            return UserDto.builder().message("Username is already exists").build();
         }
 
         User registeredUser = userRepository.save(buildUser(user));
         profileService.save(profile, user);
 
-        return registeredUser;
+        return userToDtoConverter.convert(registeredUser);
     }
 
     private User buildUser(User user) {
@@ -54,33 +93,24 @@ public class UserServiceImpl implements UserService {
     }
 
     private boolean isUsernameUsed(String username) {
-        try {
-            findByUsername(username);
-            return true;
-        } catch (UserNotFoundException e) {
-            return false;
-        }
+        return userRepository.findByUsername(username).isPresent();
     }
 
     @Override
-    @Transactional
-    public User findByUsername(String username) {
+    public UserDto findByUsername(String username) {
         Optional<User> result = userRepository.findByUsername(username);
-
-        if (result.isEmpty()) {
-            throw new UserNotFoundException("User haven't founded by username : " + username);
+        if (!result.isPresent()){
+            return UserDto.builder().message("User haven't founded by username : " + username).build();
         }
-        return result.get();
+        return userToDtoConverter.convert(result.get());
     }
 
     @Override
-    @Transactional
-    public User findById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-
-        if (user.isEmpty()) {
-            throw new UserNotFoundException("User haven't been founded by id : " + id);
+    public UserDto findById(Long id) {
+        Optional<User> result = userRepository.findById(id);
+        if (!result.isPresent()){
+            return UserDto.builder().message("User haven't founded by id : " + id).build();
         }
-        return user.get();
+        return userToDtoConverter.convert(result.get());
     }
 }

@@ -1,20 +1,23 @@
 package com.social.service;
 
+import com.social.dto.ProfileDto;
 import com.social.entity.*;
+import com.social.exception.ServiceException;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 public interface ProfileService {
 
-    Profile save(@Valid Profile profile, User user);
+    Profile save(Profile profile, User user);
 
-    Profile update(@Valid Profile profile);
+    ProfileDto update(Long id, @Valid ProfileDto profile);
 
-    void createChat(Profile profile, Profile anotherProfile, String chatName);
+    void createChat(Long profileId, Long anotherProfileId, String chatName) throws ServiceException;
 
-    void joinInGroup(Profile profile, Group group);
+    void joinInGroup(Long profileId, Long groupId) throws ServiceException;
 
-    Profile findByUser(User user);
+    ProfileDto findByUserId(Long userId);
 
-    Profile findById(Long id);
+    Optional<ProfileDto> findById(Long id);
 }

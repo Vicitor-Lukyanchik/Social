@@ -41,11 +41,11 @@ CREATE TABLE profile
     age           INTEGER                      NOT NULL,
     user_id       BIGINT REFERENCES users (id) NOT NULL,
     sex           VARCHAR(10)  DEFAULT 'UNDEFINED',
-    family_status VARCHAR(50) DEFAULT 'not specified',
-    town          VARCHAR(50) DEFAULT 'not specified',
-    phone         VARCHAR(15) DEFAULT 'not specified',
-    CHECK (sex IN ('-', 'MALE', 'FEMALE')),
-    CHECK (family_status IN ('not specified', 'married', 'not married', 'in love', 'actively looking'))
+    family_status VARCHAR(50) DEFAULT 'Undefined',
+    town          VARCHAR(50) DEFAULT 'Undefined',
+    phone         VARCHAR(15) DEFAULT 'Undefined',
+    CHECK (sex IN ('UNDEFINED', 'MALE', 'FEMALE')),
+    CHECK (family_status IN ('Undefined', 'married', 'not married', 'in love', 'actively looking'))
 );
 
 CREATE TABLE chat

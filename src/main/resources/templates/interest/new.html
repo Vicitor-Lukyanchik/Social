@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <title>New</title>
 </head>
+
+<div class="error" th:text="${interest.getMessage()}"></div>
 <body>
-<form th:method="POST" th:action="@{/interest}" th:object="${interest}">
+<form th:method="POST" th:action="@{/interests}" th:object="${interest}">
     <label for="name">Enter name: </label>
     <input type="text" th:field="*{name}" id="name"/>
+    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     <br/>
     <input type="submit" value="create"/>
 </form>

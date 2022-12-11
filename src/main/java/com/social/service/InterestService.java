@@ -1,21 +1,23 @@
 package com.social.service;
 
+import com.social.dto.IndexDto;
+import com.social.dto.InterestDto;
 import com.social.entity.Interest;
+import org.springframework.data.domain.Page;
 
-import javax.validation.Valid;
-import java.util.List;
+import java.util.Optional;
 
 public interface InterestService {
 
-    Interest save(@Valid Interest interest);
+    InterestDto save(InterestDto interestDto);
 
-    Interest update(@Valid Interest interest);
+    InterestDto update(Long id, InterestDto interestDto);
 
-    void delete(Interest interest);
+    InterestDto delete(Long id);
 
-    List<Interest> findAll();
+    Page<Interest> findAll(IndexDto indexDto);
 
     boolean isExist(String name);
 
-    Interest findById(Long id);
+    Optional<InterestDto> findById(Long id);
 }

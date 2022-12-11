@@ -23,11 +23,11 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_id")
     private Chat chat;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
@@ -38,11 +38,4 @@ public class Message {
     @Column(name = "date_time")
     @NotNull(message = "Date and time can't be null")
     private LocalDateTime dateTime;
-
-    public Message(Chat chat, Profile profile, String text, LocalDateTime dateTime) {
-        this.chat = chat;
-        this.profile = profile;
-        this.text = text;
-        this.dateTime = dateTime;
-    }
 }

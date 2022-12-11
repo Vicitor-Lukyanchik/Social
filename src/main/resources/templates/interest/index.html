@@ -4,17 +4,53 @@
     <meta charset="UTF-8">
     <title>Index</title>
 </head>
-<body>
 
-<div th:each="interest : ${interests}">
-    <a th:href="@{/interest/{id}(id=${interest.getId()})}"
-       th:text="${interest.getName()}">interest</a>
+<body>
+<form th:action="@{/interests(pageSize=${pageSize}, isSort=${isSort})}">
+    <label for="name">name : </label>
+    <input type="text" th:name="name" id="name"/><br/>
+    <label for="pageSize">Page size : </label>
+    <input type="number" th:name="pageSize" id="pageSize"/><br/>
+    <input type="submit"/><br/><br/>
+    <label for="isIdDesc">Id desc</label>
+    <input type="checkbox" name="isIdDesc" th:checked="${isIdDesc}" id="isIdDesc"/><br/>
+    <label for="isNameDesc">Name desc</label>
+    <input type="checkbox" name="isNameDesc" th:checked="${isNameDesc}" id="isNameDesc"/><br/>
+    <br/>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>
+            <input type="checkbox" name="isId" th:checked="${isId}" id="isId"/>
+        </th>
+        <th>
+            <input type="checkbox" name="isName" th:checked="${isName}" id="isName"/>
+        </th>
+    </tr>
+    <tr>
+        <th th:text="id"/>
+        <th th:text="name"/>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="interest : ${interests}">
+        <td th:text="${interest.getId()}"/>
+        <td th:text="${interest.getName()}"/>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${interestsPages.getTotalPages() > 0}"
+     th:each="pageNumber : ${pageNumbers}"
+     style="box-sizing: border-box;display: inline-block;">
+    <a th:href="@{/interests(pageSize=${size}, offset=${pageNumber} - 1)}"
+       th:text="${pageNumber}"></a>
 </div>
 
-<br/>
-<hr/>
+<br/><br/>
+<a href="/interests/new">Create new interest</a>
 
-<a href="/interest/new">Create new interest</a>
-
+</form>
 </body>
 </html>

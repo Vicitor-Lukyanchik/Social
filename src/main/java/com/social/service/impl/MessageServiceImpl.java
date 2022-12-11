@@ -6,13 +6,11 @@ import com.social.entity.Profile;
 import com.social.repository.MessageRepository;
 import com.social.service.ChatService;
 import com.social.service.MessageService;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,15 +24,12 @@ public class MessageServiceImpl implements MessageService {
     private final ChatService chatService;
 
     @Override
-    @Transactional
-    public Message save(@Valid Message message) {
-        Message result = messageRepository.save(message);
-        return result;
+    public Message save(Message message) {
+        return messageRepository.save(message);
     }
 
     @Override
-    @Transactional
-    public void sendMessage(Profile profile, @Valid Message message, Chat chat) {
+    public void sendMessage(Profile profile, Message message, Chat chat) throws ServiceException {
         if (!chatService.isExist(chat)) {
             throw new ServiceException("Chat haven't been founded by id " + chat.getId());
         }
@@ -44,8 +39,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    @Transactional
-    public List<Message> findAllByChat(@Valid Chat chat) {
+    public List<Message> findAllByChat(Chat chat) throws ServiceException {
         if (!chatService.isExist(chat)) {
             throw new ServiceException("Chat haven't been founded by id " + chat.getId());
         }

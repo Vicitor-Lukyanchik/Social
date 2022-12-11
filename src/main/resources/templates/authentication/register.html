@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+
+<h2>Register</h2>
+
+    <div class="error" th:text="${register.getMessage()}"></div>
+
+<form th:method="POST" th:action="@{/auth/register}" th:object="${register}">
+    <label for="username">Enter username: </label>
+    <input type="text" th:field="*{username}" id="username"/>
+    <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+    <br/>
+
+    <label for="password">Enter password: </label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+    <br/>
+
+    <label for="repeatedPassword">Repeat password: </label>
+    <input type="text" th:field="*{repeatedPassword}" id="repeatedPassword"/>
+    <div th:if="${#fields.hasErrors('repeatedPassword')}" th:errors="*{repeatedPassword}"></div>
+
+    <br/>
+
+    <label for="firstname">Enter firstname: </label>
+    <input type="text" th:field="*{firstname}" id="firstname"/>
+    <div th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
+    <br/>
+
+    <label for="lastname">Enter lastname: </label>
+    <input type="text" th:field="*{lastname}" id="lastname"/>
+    <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+    <br/>
+
+    <label for="email">Enter email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <br/>
+
+    <label for="age">Enter age: </label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    <br/>
+
+    <input type="submit" value="register"/>
+</form>
+
+</body>
+</html>

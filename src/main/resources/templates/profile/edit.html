@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/profiles/{id}(id=${profile.getId()})}" th:object="${profile}">
+
+    <label for="firstname">Enter firstname: </label>
+    <input type="text" th:field="*{firstname}" id="firstname"/>
+    <div th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}"></div>
+    <br/>
+
+    <label for="lastname">Enter lastname: </label>
+    <input type="text" th:field="*{lastname}" id="lastname"/>
+    <div th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}"></div>
+    <br/>
+
+    <label for="email">Enter email: </label>
+    <input type="text" th:field="*{email}" id="email"/>
+    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <br/>
+
+    <label for="age">Enter age: </label>
+    <input type="text" th:field="*{age}" id="age"/>
+    <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    <br/>
+
+    <label for="sex">Enter sex: </label>
+    <input type="text" th:field="*{sex}" id="sex"/>
+    <div th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}"></div>
+    <br/>
+
+    <label for="phone">Enter phone: </label>
+    <input type="text" th:field="*{phone}" id="phone"/>
+    <div th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+    <br/>
+
+    <label for="town">Enter town: </label>
+    <input type="text" th:field="*{town}" id="town"/>
+    <div th:if="${#fields.hasErrors('town')}" th:errors="*{town}"></div>
+    <br/>
+
+    <label for="familyStatus">Enter familyStatus: </label>
+    <input type="text" th:field="*{familyStatus}" id="familyStatus"/>
+    <div th:if="${#fields.hasErrors('familyStatus')}" th:errors="*{familyStatus}"></div>
+    <br/>
+
+    <input type="submit" value="update"/>
+</form>
+
+</body>
+</html>

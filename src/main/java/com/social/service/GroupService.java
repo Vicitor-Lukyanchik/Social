@@ -3,14 +3,13 @@ package com.social.service;
 import com.social.entity.Group;
 import com.social.entity.Interest;
 import com.social.entity.Profile;
-
-import javax.validation.Valid;
+import com.social.exception.ServiceException;
 
 public interface GroupService {
 
-    Group save(@Valid Group group, Profile profile, Interest interest);
+    Group save(Group group, Profile profile, Interest interest) throws ServiceException;
 
-    boolean isExist(Group group);
+    boolean isPresent(Long id);
 
-    Group findById(Long id);
+    Group findById(Long id) throws ServiceException;
 }

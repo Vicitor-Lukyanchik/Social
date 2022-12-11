@@ -57,86 +57,22 @@ public class Profile {
     @Size(max = 50, message = "Family status should be less than 50")
     private String familyStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "profile_group",
             joinColumns = {@JoinColumn(name = "profile_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "group_id", referencedColumnName = "id")})
     private List<Group> joinGroups;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "profile")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "profile")
     private List<Group> createdGroups;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "profile_chat",
             joinColumns = {@JoinColumn(name = "profile_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "chat_id", referencedColumnName = "id")})
     private List<Chat> chats;
-
-    public Profile(String firstname, String lastname, String email, Sex sex, Integer age, String town, String phone,
-                   String familyStatus, User user, List<Group> joinGroups, List<Group> createdGroups, List<Chat> chats) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.sex = sex;
-        this.age = age;
-        this.town = town;
-        this.phone = phone;
-        this.familyStatus = familyStatus;
-        this.user = user;
-        this.joinGroups = joinGroups;
-        this.createdGroups = createdGroups;
-        this.chats = chats;
-    }
-
-    public Profile(String firstname, String lastname, String email, Sex sex, Integer age, String town,
-                   String phone, String familyStatus, User user) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.sex = sex;
-        this.age = age;
-        this.town = town;
-        this.phone = phone;
-        this.familyStatus = familyStatus;
-        this.user = user;
-    }
-
-    public Profile(String firstname, String lastname, String email, Sex sex, Integer age, User user) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.sex = sex;
-        this.age = age;
-        this.user = user;
-    }
-
-    public Profile(String firstname, String lastname, String email, Sex sex, Integer age, String town, String phone, String familyStatus) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.sex = sex;
-        this.age = age;
-        this.town = town;
-        this.phone = phone;
-        this.familyStatus = familyStatus;
-    }
-
-    public Profile(Long id, String firstname, String lastname, String email, Integer age) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.age = age;
-    }
-
-    public Profile(String firstname, String lastname, String email, Integer age) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.age = age;
-    }
 }

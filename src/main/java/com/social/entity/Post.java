@@ -23,11 +23,11 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chat_id")
     private Chat chat;
 
@@ -42,12 +42,4 @@ public class Post {
     @Column(name = "date_time")
     @NotNull(message = "Date and time can't be null")
     private LocalDateTime dateTime;
-
-      public Post(Group group, Chat chat, String title, String text, LocalDateTime dateTime) {
-        this.group = group;
-        this.chat = chat;
-        this.title = title;
-        this.text = text;
-        this.dateTime = dateTime;
-    }
 }

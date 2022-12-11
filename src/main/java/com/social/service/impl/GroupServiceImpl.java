@@ -6,15 +6,12 @@ import com.social.entity.Profile;
 import com.social.repository.GroupRepository;
 import com.social.service.GroupService;
 import com.social.service.InterestService;
-import com.social.service.exception.ServiceException;
+import com.social.exception.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +22,7 @@ public class GroupServiceImpl implements GroupService {
     private final InterestService interestService;
 
     @Override
-    @Transactional
-    public Group save(@Valid Group group, Profile profile, Interest interest) {
+    public Group save(Group group, Profile profile, Interest interest) throws ServiceException {
         if (!interestService.isExist(interest.getName())){
             throw new ServiceException("Interest haven't been founded by name " + interest.getName());
         }
@@ -41,24 +37,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    @Transactional
-    public boolean isExist(Group group) {
-        try {
-            findById(group.getId());
-            return true;
-        } catch (ServiceException e) {
-            return false;
-        }
+    public boolean isPresent(Long id) {
+        return groupRepository.existsById(id);
     }
 
     @Override
-    @Transactional
-    public Group findById(Long id) {
-        Optional<Group> group = groupRepository.findById(id);
-
-        if (group.isEmpty()) {
-            throw new ServiceException("Group haven't been founded by id : " + id);
-        }
-        return group.get();
+    public Group findById(Long id) throws ServiceException {
+        return groupRepository.findById(id)
+                .orElseThrow(() -> new ServiceException("Group haven't been founded by id : " + id));
     }
 }

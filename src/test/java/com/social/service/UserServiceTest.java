@@ -1,30 +1,28 @@
 package com.social.service;
 
+import com.social.converter.DtoToUserConverter;
+import com.social.converter.UserToDtoConverter;
+import com.social.dto.UserDto;
 import com.social.entity.Profile;
 import com.social.entity.User;
+import com.social.exception.ServiceException;
+import com.social.repository.RoleRepository;
 import com.social.repository.UserRepository;
-import com.social.service.exception.UserNotFoundException;
-import com.social.validator.BeanValidator;
-import com.social.validator.ServiceTestException;
-import com.social.validator.ValidationException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Optional;
+import javax.validation.ConstraintViolationException;
 
 import static com.social.Constants.*;
+import static com.social.util.MockUtils.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceTest {
 
@@ -34,181 +32,211 @@ public class UserServiceTest {
     @MockBean
     private ProfileService profileService;
 
-    @MockBean
+    @Autowired
     private UserRepository userRepository;
 
-    @MockBean
-    private RoleService roleService;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
-    private BeanValidator validator;
+    private UserToDtoConverter userToDtoConverter;
 
-    @Test
-    public void registerShouldThrowExceptionWhenUsernameIsEmpty() {
-        User user = User.builder().username("").password(PASSWORD).status(STATUS).build();
-
-        assertThrows(ValidationException.class, () -> validator.validate(user));
+    @AfterEach
+    public void cleanUp() {
+        userRepository.deleteAll();
+        userRepository.flush();
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenUsernameLessThan4() {
-        User user = User.builder().username("use").password(PASSWORD).status(STATUS).build();
+    public void registerUserShouldThrowExceptionWhenUsernameIsEmpty() {
+        User user = createUser();
+        Profile profile = createProfile();
+        user.setUsername(EMPTY_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(user));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenUsernameMoreThan50() {
-        User user = User.builder().username("abcdefgsdfghjkjjhvbnhjknkmabcdefgabcdefgabcdefgabcde")
-                .password(PASSWORD).status(STATUS).build();
+    public void registerUserShouldThrowExceptionWhenUsernameLessThan4() {
+        Profile profile = createProfile();
+        User user = createUser();
+        user.setUsername(LESS_THAN_4);
 
-        assertThrows(ValidationException.class, () -> validator.validate(user));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenPasswordIsEmpty() {
-        User user = User.builder().username(USERNAME).password("").status(STATUS).build();
+    public void registerUserShouldThrowExceptionWhenUsernameMoreThan50() {
+        Profile profile = createProfile();
+        User user = createUser();
+        user.setUsername(MORE_THAN_50);
 
-        assertThrows(ValidationException.class, () -> validator.validate(user));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenFirstnameMoreThan50() {
-        Profile profile = Profile.builder().firstname("Anduhoogfoooodfiuytyryuioiuytyuiouiytyuioiuytryuiopiuytrtyuighjuyy")
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenPasswordIsEmpty() {
+        User user = createUser();
+        Profile profile = createProfile();
+        user.setPassword(EMPTY_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenFirstnameLessThan2() {
-        Profile profile = Profile.builder().firstname("A")
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenFirstnameMoreThan50() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setFirstname(MORE_THAN_50);
 
-        assertThrows(ServiceTestException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenFirstnameIsEmpty() {
-        Profile profile = Profile.builder().firstname("")
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenFirstnameLessThan2() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setFirstname(LESS_THAN_2);
 
-        assertThrows(ServiceTestException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenFirstLetterInFirstnameLowercase() {
-        Profile profile = Profile.builder().firstname("andrey")
-                .lastname(LASTNAME).email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenFirstnameIsEmpty() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setFirstname(EMPTY_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenLastnameMoreThan50() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname("Lovchinovchinovchinovchinovchinovchinovchinovchinovchinovchinovchin").email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenFirstLetterInFirstnameLowercase() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setLastname(LOWERCASE_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenLastnameLessThan2() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname("L").email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenLastnameMoreThan50() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setLastname(MORE_THAN_50);
 
-        assertThrows(ServiceTestException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenLastnameIsEmpty() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname("").email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenLastnameLessThan2() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setLastname(LESS_THAN_2);
 
-        assertThrows(ServiceTestException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenFirstLetterInLastnameLowercase() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname("lovchin").email(EMAIL).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenLastnameIsEmpty() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setLastname(EMPTY_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenAgeLessThan6() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(5).build();
+    public void registerUserShouldThrowExceptionWhenFirstLetterInLastnameLowercase() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setLastname(LOWERCASE_STRING);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenAgeMoreThan120() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL).age(121).build();
+    public void registerUserShouldThrowExceptionWhenAgeLessThan6() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setAge(AGE_LESS_THAN_6);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldThrowExceptionWhenMailNotValid() {
-        Profile profile = Profile.builder().firstname(FIRSTNAME)
-                .lastname(LASTNAME).email("gimail.ru").age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenAgeMoreThan120() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setAge(AGE_MORE_THAN_120);
 
-        assertThrows(ValidationException.class, () -> validator.validate(profile));
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
     }
 
     @Test
-    public void registerShouldRegisterUser() {
-        User user = User.builder().username(USERNAME).password(PASSWORD).status(STATUS).build();
-        Profile profile = Profile.builder()
-                .firstname(FIRSTNAME)
-                .lastname(LASTNAME).email(EMAIL)
-                .sex(SEX).age(AGE).build();
+    public void registerUserShouldThrowExceptionWhenMailNotValid() {
+        User user = createUser();
+        Profile profile = createProfile();
+        profile.setEmail(NOT_VALID_EMAIL);
+
+        assertThrows(ConstraintViolationException.class, () -> userService.registerUser(user, profile));
+    }
+
+    @Test
+    public void registerUserShouldRegisterUser() {
+        roleRepository.save(createRole());
+        User expected = createUser();
+        Profile profile = createProfile();
 
         given(profileService.save(isA(Profile.class), isA(User.class))).willReturn(profile);
-        given(userRepository.save(isA(User.class))).willReturn(user);
+        UserDto actual = userService.registerUser(expected, profile);
 
-        userService.register(user, profile);
+        assertEquals(expected.getPassword(), actual.getPassword());
+        assertEquals(expected.getUsername(), actual.getUsername());
+        assertEquals(expected.getStatus(), actual.getStatus());
 
-        verify(userRepository, Mockito.times(1)).save(user);
-        verify(profileService, Mockito.times(1)).save(profile, user);
     }
 
 
     @Test
     public void findByUsernameShouldThrowExceptionWhenUserNotFound() {
-        given(userRepository.findByUsername(isA(String.class))).willReturn(Optional.empty());
+        UserDto expected = UserDto.builder().message("User haven't founded by username : " + USERNAME).build();
 
-        assertThrows(UserNotFoundException.class, () -> userService.findByUsername(USERNAME));
+        UserDto actual = userService.findByUsername(USERNAME);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
     public void findByUsernameShouldReturnUser() {
-        User expected = new User(USERNAME, PASSWORD);
+        UserDto expected = userToDtoConverter.convert(userRepository.save(createUser()));
 
-        given(userRepository.findByUsername(isA(String.class))).willReturn(Optional.of(expected));
-        User actual = userService.findByUsername(USERNAME);
+        UserDto actual = userService.findByUsername(USERNAME);
 
-        assertEquals(expected, actual);
+        assertEquals(expected.getPassword(), actual.getPassword());
+        assertEquals(expected.getUsername(), actual.getUsername());
+        assertEquals(expected.getStatus(), actual.getStatus());
+        assertEquals(expected.getId(), actual.getId());
     }
 
     @Test
     public void findByIdShouldThrowExceptionWhenUserNotFound() {
-        given(userRepository.findById(isA(Long.class))).willReturn(Optional.empty());
+        UserDto expected = UserDto.builder().message("User haven't founded by id : " + ID).build();
 
-        assertThrows(UserNotFoundException.class, () -> userService.findById(ID));
+        UserDto actual = userService.findById(ID);
+
+        assertEquals(expected.getMessage(), actual.getMessage());
     }
 
     @Test
     public void findByIdShouldReturnUser() {
-        User expected = new User(USERNAME, PASSWORD);
+        UserDto expected = userToDtoConverter.convert(userRepository.save(createUser()));
 
-        given(userRepository.findById(isA(Long.class))).willReturn(Optional.of(expected));
-        User actual = userService.findById(ID);
+        UserDto actual = userService.findById(expected.getId());
 
-        assertEquals(expected, actual);
+        assertEquals(expected.getPassword(), actual.getPassword());
+        assertEquals(expected.getUsername(), actual.getUsername());
+        assertEquals(expected.getStatus(), actual.getStatus());
+        assertEquals(expected.getId(), actual.getId());
     }
 }

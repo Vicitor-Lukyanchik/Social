@@ -10,6 +10,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @EqualsAndHashCode
+@AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Table(name = "interest")
@@ -22,13 +23,4 @@ public class Interest {
     @Column(name = "name")
     @Size(min = 1, max = 50, message = "Interest name should be less than 50 and more than 1")
     private String name;
-
-    public Interest(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Interest(String name) {
-        this.name = name;
-    }
 }
